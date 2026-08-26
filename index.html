@@ -84,27 +84,41 @@
     }
 
     /* Geometric Balance Buttons & Interactive Elements */
+    button, [role="button"], .btn-brutal, .btn-geo {
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
     .btn-brutal, .btn-geo {
       border: 2.5px solid #121316;
       box-shadow: 3px 3px 0px #121316;
-      transition: transform 0.08s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.08s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: background-color 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease, transform 0.08s ease;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.03em;
+      position: relative;
     }
+
+    /* Ensure inner spans, emojis, and labels do not interfere with hit target or hover */
+    .btn-brutal *, .btn-geo * {
+      pointer-events: none;
+    }
+
     .btn-brutal:hover:not(:disabled), .btn-geo:hover:not(:disabled) {
-      transform: translate(-1.5px, -1.5px);
-      box-shadow: 4.5px 4.5px 0px #121316;
+      filter: brightness(1.06) contrast(1.02);
+      box-shadow: 4px 4px 0px #121316;
     }
     .btn-brutal:active:not(:disabled), .btn-geo:active:not(:disabled) {
       transform: translate(2px, 2px);
       box-shadow: 1px 1px 0px #121316;
+      filter: brightness(0.96);
     }
     .btn-brutal:disabled, .btn-geo:disabled {
       opacity: 0.45;
       cursor: not-allowed;
       box-shadow: 1.5px 1.5px 0px #121316;
       transform: none;
+      filter: none;
     }
 
     .card-brutal, .card-geo {
@@ -1521,9 +1535,12 @@
           const cardContainer = this.createProceduralCard(cardData, cardWidth, cardHeight, isSelected);
           cardContainer.setPosition(targetX, targetY);
 
-          // Interactive setup
-          cardContainer.setSize(cardWidth, cardHeight);
-          cardContainer.setInteractive({ useHandCursor: true });
+          // Interactive setup with properly centered hit area to match container origin
+          const hitRect = new Phaser.Geom.Rectangle(-cardWidth / 2 - 2, -cardHeight / 2 - 4, cardWidth + 4, cardHeight + 8);
+          cardContainer.setInteractive(hitRect, Phaser.Geom.Rectangle.Contains);
+          if (cardContainer.input) {
+            cardContainer.input.cursor = 'pointer';
+          }
 
           cardContainer.on('pointerdown', () => {
             if (gameState.isScoring) return;
@@ -1532,20 +1549,22 @@
 
           cardContainer.on('pointerover', () => {
             if (gameState.isScoring) return;
+            this.tweens.killTweensOf(cardContainer);
             this.tweens.add({
               targets: cardContainer,
-              scale: 1.05,
-              duration: 100,
-              ease: 'Quad.easeOut'
+              scale: 1.07,
+              duration: 120,
+              ease: 'Cubic.easeOut'
             });
           });
 
           cardContainer.on('pointerout', () => {
+            this.tweens.killTweensOf(cardContainer);
             this.tweens.add({
               targets: cardContainer,
               scale: 1.0,
-              duration: 100,
-              ease: 'Quad.easeOut'
+              duration: 120,
+              ease: 'Cubic.easeOut'
             });
           });
 
