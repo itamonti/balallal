@@ -148,6 +148,53 @@
       animation: pulseGlow 0.4s ease-in-out;
     }
 
+    /* HUD Number Count Transitions & Framer-like Punch Keyframes */
+    .hud-num-transition {
+      display: inline-block;
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.15s ease;
+      will-change: transform, color;
+    }
+
+    @keyframes hudPulseUp {
+      0% { transform: scale(1); }
+      35% { transform: scale(1.25); color: #059669; }
+      100% { transform: scale(1); }
+    }
+    .hud-punch-up {
+      animation: hudPulseUp 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes hudPulseDown {
+      0% { transform: scale(1); }
+      35% { transform: scale(0.85); color: #E11D48; }
+      100% { transform: scale(1); }
+    }
+    .hud-punch-down {
+      animation: hudPulseDown 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes hudTreasuryPulse {
+      0% { transform: scale(1); }
+      35% { transform: scale(1.28); color: #B45309; text-shadow: 0 0 8px rgba(253, 224, 71, 0.85); }
+      100% { transform: scale(1); }
+    }
+    .hud-punch-gold {
+      animation: hudTreasuryPulse 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes hudActionFlip {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.22); color: #1E293B; }
+      100% { transform: scale(1); }
+    }
+    .hud-punch-action {
+      animation: hudActionFlip 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .hud-progress-smooth {
+      transition: width 0.45s cubic-bezier(0.34, 1.25, 0.64, 1), background-color 0.3s ease;
+    }
+
     /* Custom Geometric Scrollbars */
     ::-webkit-scrollbar {
       width: 8px;
@@ -169,6 +216,24 @@
       box-shadow: 3px 3px 0px #121316;
       border-radius: 4px;
       background-color: #ECE8DE;
+    }
+
+    /* Leaderboard Rank Highlights & Transitions */
+    .lb-row-gold {
+      background-color: #FEF08A !important;
+      border-left: 4px solid #B45309 !important;
+    }
+    .lb-row-silver {
+      background-color: #F1F5F9 !important;
+      border-left: 4px solid #64748B !important;
+    }
+    .lb-row-bronze {
+      background-color: #FFEDD5 !important;
+      border-left: 4px solid #C2410C !important;
+    }
+    .lb-row-user {
+      outline: 2px solid #000;
+      box-shadow: 2px 2px 0px #000;
     }
   </style>
 </head>
@@ -204,6 +269,10 @@
       <button id="btn-stats-modal" onclick="openStatsModal()" class="btn-brutal bg-safetyYellow px-2.5 py-1 text-xs">
         🏆 STATS
       </button>
+      <button id="btn-leaderboard-modal" onclick="leaderboardSystem.openModal()" class="btn-brutal bg-coral px-2.5 py-1 text-xs flex items-center gap-1 font-black">
+        <span>🌐</span>
+        <span class="hidden sm:inline">LEADERBOARD</span>
+      </button>
     </div>
   </header>
 
@@ -228,15 +297,15 @@
     <div class="border-3 border-black bg-manila p-2 sm:p-3 shadow-brutal flex flex-col justify-between">
       <div class="flex justify-between items-center text-xs font-bold text-neutral-600 uppercase">
         <span>MANDATE SCORE</span>
-        <span id="hud-mandate-pct" class="text-[10px] font-black bg-safetyYellow px-1 border border-black">0%</span>
+        <span id="hud-mandate-pct" class="hud-num-transition text-[10px] font-black bg-safetyYellow px-1 border border-black">0%</span>
       </div>
       <div class="my-1 flex items-baseline gap-1">
-        <span id="hud-current-mandate" class="text-xl sm:text-2xl font-black tracking-tight text-black">0</span>
-        <span class="text-xs font-bold text-neutral-500">/ <span id="hud-target-mandate">300</span></span>
+        <span id="hud-current-mandate" class="hud-num-transition text-xl sm:text-2xl font-black tracking-tight text-black">0</span>
+        <span class="text-xs font-bold text-neutral-500">/ <span id="hud-target-mandate" class="hud-num-transition font-bold">300</span></span>
       </div>
       <!-- Progress Bar -->
       <div class="w-full h-3 border-2 border-black bg-white p-0.5 overflow-hidden">
-        <div id="hud-mandate-bar" class="h-full bg-mintDark transition-all duration-300" style="width: 0%;"></div>
+        <div id="hud-mandate-bar" class="h-full bg-mintDark hud-progress-smooth" style="width: 0%;"></div>
       </div>
     </div>
 
@@ -248,11 +317,11 @@
       <div class="grid grid-cols-2 gap-1 my-1">
         <div class="bg-skyBlue border-2 border-black p-1 text-center">
           <div class="text-[10px] font-black leading-none uppercase">HANDS</div>
-          <div id="hud-hands-count" class="text-lg sm:text-xl font-black leading-none mt-1">3/3</div>
+          <div id="hud-hands-count" class="hud-num-transition text-lg sm:text-xl font-black leading-none mt-1">3/3</div>
         </div>
         <div class="bg-coral border-2 border-black p-1 text-center">
           <div class="text-[10px] font-black leading-none uppercase">DISCARDS</div>
-          <div id="hud-discards-count" class="text-lg sm:text-xl font-black leading-none mt-1">3/3</div>
+          <div id="hud-discards-count" class="hud-num-transition text-lg sm:text-xl font-black leading-none mt-1">3/3</div>
         </div>
       </div>
       <div class="text-[9px] text-center font-bold text-neutral-600 uppercase">
@@ -267,7 +336,7 @@
         <span class="text-[10px] font-black">BUDGET</span>
       </div>
       <div class="my-1 flex items-center justify-between">
-        <span id="hud-treasury-val" class="text-2xl sm:text-3xl font-black tracking-tight text-black">$8</span>
+        <span id="hud-treasury-val" class="hud-num-transition text-2xl sm:text-3xl font-black tracking-tight text-black">$8</span>
         <span class="text-2xl">💰</span>
       </div>
       <div class="text-[10px] font-bold bg-white px-1.5 py-0.5 border-2 border-black text-center truncate">
@@ -472,9 +541,15 @@
         </div>
       </div>
 
-      <button onclick="gameController.startNewGame()" class="btn-brutal bg-safetyYellow hover:bg-safetyYellowDark w-full py-3 text-base font-black uppercase">
-        🔄 LAUNCH NEW CAMPAIGN (RESTART)
-      </button>
+      <div class="flex flex-col sm:flex-row gap-2">
+        <button onclick="gameController.startNewGame()" class="btn-brutal bg-safetyYellow hover:bg-safetyYellowDark w-full py-3 text-sm sm:text-base font-black uppercase">
+          🔄 LAUNCH NEW CAMPAIGN
+        </button>
+        <button onclick="leaderboardSystem.openModal()" class="btn-brutal bg-white hover:bg-safetyYellow w-full py-3 text-sm sm:text-base font-black uppercase flex items-center justify-center gap-1">
+          <span>🌐</span>
+          <span>VIEW LEADERBOARD</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -506,10 +581,14 @@
 
       <div class="flex flex-col sm:flex-row gap-2">
         <button onclick="gameController.continueEndlessMode()" class="btn-brutal bg-safetyYellow w-full py-2.5 text-sm font-black uppercase">
-          ♾️ ENTER ENDLESS LEGISLATIVE MODE
+          ♾️ ENTER ENDLESS MODE
+        </button>
+        <button onclick="leaderboardSystem.openModal()" class="btn-brutal bg-coral w-full py-2.5 text-sm font-black uppercase flex items-center justify-center gap-1">
+          <span>🌐</span>
+          <span>LEADERBOARD</span>
         </button>
         <button onclick="gameController.startNewGame()" class="btn-brutal bg-white w-full py-2.5 text-sm font-black uppercase">
-          🔄 NEW CAMPAIGN
+          🔄 RESTART
         </button>
       </div>
     </div>
@@ -663,6 +742,143 @@
     </div>
   </div>
 
+  <!-- 7. CONGRESSIONAL LEADERBOARD MODAL -->
+  <div id="modal-leaderboard" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-3 hidden">
+    <div class="bg-manila border-4 border-black shadow-brutal-lg w-full max-w-2xl max-h-[92vh] overflow-y-auto p-4 sm:p-6 flex flex-col justify-between">
+      <div>
+        <!-- Modal Header -->
+        <div class="flex justify-between items-start border-b-3 border-black pb-3 mb-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <div class="bg-black text-safetyYellow px-2 py-0.5 text-xs font-black inline-block uppercase">
+                ONLINE CONGRESSIONAL SERVER
+              </div>
+              <span id="lb-online-badge" class="bg-emerald-100 text-emerald-800 border border-emerald-800 text-[10px] font-black px-1.5 py-0.5 flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>LIVE SERVER</span>
+              </span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-black uppercase mt-1">NATIONAL CONGRESSIONAL LEADERBOARD</h2>
+            <p class="text-xs text-neutral-700 font-bold">Real-time multiplayer ranking of Chief Executives across all active campaigns</p>
+          </div>
+          <button onclick="leaderboardSystem.closeModal()" class="btn-brutal bg-coral px-2.5 py-1 text-xs font-black">
+            ✕ CLOSE
+          </button>
+        </div>
+
+        <!-- Global Live Stats Banner -->
+        <div id="lb-server-stats-banner" class="grid grid-cols-3 gap-2 bg-white border-2 border-black p-2 mb-3 text-center text-xs">
+          <div>
+            <div class="text-[10px] font-bold text-neutral-500 uppercase">ONLINE CAMPAIGNS</div>
+            <div id="lb-stat-total-runs" class="text-sm font-black text-black">--</div>
+          </div>
+          <div class="border-x-2 border-neutral-300">
+            <div class="text-[10px] font-bold text-neutral-500 uppercase">TOP ONLINE MANDATE</div>
+            <div id="lb-stat-top-mandate" class="text-sm font-black text-emerald-700">--</div>
+          </div>
+          <div>
+            <div class="text-[10px] font-bold text-neutral-500 uppercase">GLOBAL BILLS PASSED</div>
+            <div id="lb-stat-total-bills" class="text-sm font-black text-black">--</div>
+          </div>
+        </div>
+
+        <!-- Leaderboard Controls & Category Filter Tabs -->
+        <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2 mb-3">
+          <div class="flex items-center gap-1 border-2 border-black bg-white p-1">
+            <button id="lb-tab-mandate" onclick="leaderboardSystem.setCategory('mandate')" class="btn-brutal bg-safetyYellow px-2.5 py-1 text-xs font-black">
+              ⚡ HIGHEST MANDATE
+            </button>
+            <button id="lb-tab-term" onclick="leaderboardSystem.setCategory('term')" class="btn-brutal bg-white px-2.5 py-1 text-xs font-bold">
+              🏛️ TERMS SURVIVED
+            </button>
+            <button id="lb-tab-bills" onclick="leaderboardSystem.setCategory('bills')" class="btn-brutal bg-white px-2.5 py-1 text-xs font-bold">
+              📜 BILLS PASSED
+            </button>
+          </div>
+
+          <!-- Player Administration Callout & Refresh -->
+          <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1 bg-white border-2 border-black px-2 py-1">
+              <span class="text-[10px] font-bold uppercase text-neutral-500">PRESIDENT:</span>
+              <input id="lb-player-name-input" type="text" maxlength="16" placeholder="Your Title/Name" value="PRESIDENT YOU" onchange="leaderboardSystem.updatePlayerName(this.value)" class="text-xs font-black bg-neutral-100 px-1.5 py-0.5 border border-black max-w-[120px] uppercase outline-none focus:bg-safetyYellow" />
+            </div>
+            <button onclick="leaderboardSystem.refreshOnlineData()" title="Refresh Live Data" class="btn-brutal bg-white hover:bg-safetyYellow px-2 py-1 text-xs font-black">
+              🔄
+            </button>
+          </div>
+        </div>
+
+        <!-- High-Score Table -->
+        <div class="border-3 border-black bg-white overflow-hidden shadow-brutal mb-3">
+          <div class="bg-black text-white grid grid-cols-12 p-2 text-xs font-black uppercase tracking-wider">
+            <div class="col-span-2 text-center">RANK</div>
+            <div class="col-span-5">ADMINISTRATION / PLAYER</div>
+            <div class="col-span-2 text-center">TERM</div>
+            <div class="col-span-3 text-right">SCORE</div>
+          </div>
+          <div id="lb-table-rows" class="divide-y-2 divide-neutral-200 text-xs font-bold max-h-[320px] overflow-y-auto">
+            <div class="p-4 text-center text-neutral-500 font-bold uppercase animate-pulse">
+              Connecting to online congressional server...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="border-t-3 border-black pt-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-bold">
+        <div class="text-neutral-600 flex items-center gap-1">
+          <span>👑</span>
+          <span>Your Best Score: <span id="lb-user-pb" class="font-black text-black">0</span></span>
+        </div>
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <button id="btn-lb-submit-run" onclick="leaderboardSystem.openSubmitNamePrompt()" class="btn-brutal bg-mint hover:bg-mintDark px-3 py-1.5 text-xs font-black flex-1 sm:flex-initial">
+            ⬆️ SUBMIT ACTIVE RUN TO ONLINE SERVER
+          </button>
+          <button onclick="leaderboardSystem.clearLocalCache()" class="btn-brutal bg-white hover:bg-coral px-2.5 py-1.5 text-[10px] text-neutral-600 hover:text-black">
+            CLEAR CACHE
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. PRESIDENTIAL NAME PROMPT & RUN SUBMISSION MODAL -->
+  <div id="modal-submit-name" class="fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-3 hidden">
+    <div class="bg-safetyYellow border-4 border-black shadow-brutal-lg w-full max-w-md p-5 text-center">
+      <div class="bg-black text-white px-3 py-1 font-black text-xs uppercase inline-block mb-2">
+        OFFICIAL LEGISLATIVE RECORD
+      </div>
+      <h2 class="text-2xl font-black uppercase text-black mb-1">NAME YOUR ADMINISTRATION</h2>
+      <p class="text-xs font-bold text-neutral-800 mb-4">
+        Choose your Presidential Title / Call-sign for the National Online Leaderboard:
+      </p>
+
+      <div class="bg-white border-3 border-black p-3 mb-4 text-left">
+        <label class="block text-[10px] font-black uppercase text-neutral-500 mb-1">PRESIDENTIAL TITLE / HANDLE:</label>
+        <input 
+          id="modal-player-name-input" 
+          type="text" 
+          maxlength="16" 
+          placeholder="e.g. MADISON_88, LINCOLN, CHIEF_OF_STAFF" 
+          class="w-full text-sm font-black bg-neutral-100 p-2 border-2 border-black uppercase outline-none focus:bg-safetyYellow mb-2"
+        />
+        <div class="text-[10px] text-neutral-600 font-bold flex justify-between">
+          <span>Max 16 characters</span>
+          <span id="submit-dialog-run-preview" class="font-black text-black">MANDATE: 0 PTS</span>
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <button onclick="leaderboardSystem.cancelNamePrompt()" class="btn-brutal bg-white w-1/3 py-2 text-xs font-black uppercase">
+          CANCEL
+        </button>
+        <button onclick="leaderboardSystem.confirmSubmitWithName()" id="btn-confirm-submit-run" class="btn-brutal bg-mint hover:bg-mintDark w-2/3 py-2 text-xs font-black uppercase">
+          🚀 TRANSMIT RUN
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ========================================================================= -->
   <!-- JAVASCRIPT GAME ENGINE: SOUND, LOGIC, PHASER 3, SHOP, MODIFIERS, STORAGE   -->
   <!-- ========================================================================= -->
@@ -740,6 +956,15 @@
 
       playDeal() {
         this.playTone(400, 'triangle', 0.05, 0.1);
+      }
+
+      playCardDraw() {
+        this.playTone(480, 'triangle', 0.04, 0.12);
+        setTimeout(() => this.playTone(600, 'sine', 0.05, 0.1), 30);
+      }
+
+      playCardDiscard() {
+        this.playTone(320, 'sine', 0.06, 0.1);
       }
 
       playGavel() {
@@ -1197,6 +1422,7 @@
       }
 
       reset() {
+        this.runId = `run_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
         this.term = 1;
         this.mandate = 0;
         this.targetMandate = 300;
@@ -1250,6 +1476,7 @@
       save() {
         try {
           const data = {
+            runId: this.runId || `run_${Date.now()}`,
             term: this.term,
             mandate: this.mandate,
             targetMandate: this.targetMandate,
@@ -1278,6 +1505,7 @@
           const raw = localStorage.getItem('cabinet_run_state');
           if (!raw) return false;
           const data = JSON.parse(raw);
+          this.runId = data.runId || `run_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
           this.term = data.term || 1;
           this.mandate = data.mandate || 0;
           this.targetMandate = data.targetMandate || 300;
@@ -1830,6 +2058,63 @@
     /* =========================================================================
        8. UI CONTROLLER & VIEW UPDATER
        ========================================================================= */
+    const hudState = {
+      mandate: 0,
+      treasury: 8,
+      target: 300,
+      handsRemaining: 3,
+      discardsRemaining: 3,
+      pct: 0,
+      initialized: false,
+      activeAnims: {}
+    };
+
+    function animateHudNumber(elemId, startVal, targetVal, duration, formatFn, punchClass) {
+      const elem = document.getElementById(elemId);
+      if (!elem) return;
+
+      if (hudState.activeAnims[elemId]) {
+        cancelAnimationFrame(hudState.activeAnims[elemId]);
+        delete hudState.activeAnims[elemId];
+      }
+
+      if (startVal === targetVal) {
+        elem.textContent = formatFn ? formatFn(targetVal) : targetVal.toLocaleString();
+        return;
+      }
+
+      if (punchClass) {
+        elem.classList.remove('hud-punch-up', 'hud-punch-down', 'hud-punch-gold', 'hud-punch-action');
+        void elem.offsetWidth; // Trigger reflow for CSS keyframe restart
+        elem.classList.add(punchClass);
+        setTimeout(() => {
+          if (elem) elem.classList.remove(punchClass);
+        }, 450);
+      }
+
+      const startTime = performance.now();
+      const diff = targetVal - startVal;
+
+      function step(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Cubic ease-out curve
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(startVal + diff * ease);
+
+        elem.textContent = formatFn ? formatFn(current) : current.toLocaleString();
+
+        if (progress < 1) {
+          hudState.activeAnims[elemId] = requestAnimationFrame(step);
+        } else {
+          elem.textContent = formatFn ? formatFn(targetVal) : targetVal.toLocaleString();
+          delete hudState.activeAnims[elemId];
+        }
+      }
+
+      hudState.activeAnims[elemId] = requestAnimationFrame(step);
+    }
+
     const gameUI = {
       updateHUD() {
         const termConfig = TERM_CONFIGS[Math.min(gameState.term - 1, TERM_CONFIGS.length - 1)];
@@ -1840,18 +2125,77 @@
         document.getElementById('hud-crisis-desc').textContent = termConfig ? termConfig.crisis : 'Endless Escalation';
         document.getElementById('hud-term-target').textContent = target.toLocaleString();
         document.getElementById('hud-target-mandate').textContent = target.toLocaleString();
-
-        document.getElementById('hud-current-mandate').textContent = gameState.mandate.toLocaleString();
-
-        const pct = Math.min(100, Math.floor((gameState.mandate / target) * 100));
-        document.getElementById('hud-mandate-pct').textContent = `${pct}%`;
-        document.getElementById('hud-mandate-bar').style.width = `${pct}%`;
-
-        document.getElementById('hud-hands-count').textContent = `${gameState.handsRemaining}/${gameState.baseHands}`;
-        document.getElementById('hud-discards-count').textContent = `${gameState.discardsRemaining}/${gameState.baseDiscards}`;
-
-        document.getElementById('hud-treasury-val').textContent = `$${gameState.treasury}`;
         document.getElementById('header-deck-count').textContent = gameState.deck.length;
+
+        const currentMandate = gameState.mandate;
+        const currentTreasury = gameState.treasury;
+        const currentHands = gameState.handsRemaining;
+        const currentDiscards = gameState.discardsRemaining;
+        const targetPct = Math.min(100, Math.floor((currentMandate / target) * 100));
+
+        if (!hudState.initialized) {
+          // Direct initial render
+          document.getElementById('hud-current-mandate').textContent = currentMandate.toLocaleString();
+          document.getElementById('hud-mandate-pct').textContent = `${targetPct}%`;
+          document.getElementById('hud-mandate-bar').style.width = `${targetPct}%`;
+          document.getElementById('hud-hands-count').textContent = `${currentHands}/${gameState.baseHands}`;
+          document.getElementById('hud-discards-count').textContent = `${currentDiscards}/${gameState.baseDiscards}`;
+          document.getElementById('hud-treasury-val').textContent = `$${currentTreasury}`;
+
+          hudState.mandate = currentMandate;
+          hudState.treasury = currentTreasury;
+          hudState.handsRemaining = currentHands;
+          hudState.discardsRemaining = currentDiscards;
+          hudState.pct = targetPct;
+          hudState.initialized = true;
+        } else {
+          // Smooth count for Mandate score
+          if (currentMandate !== hudState.mandate) {
+            const punch = currentMandate > hudState.mandate ? 'hud-punch-up' : 'hud-punch-down';
+            animateHudNumber('hud-current-mandate', hudState.mandate, currentMandate, 450, null, punch);
+            hudState.mandate = currentMandate;
+          }
+
+          // Smooth percentage & bar update
+          if (targetPct !== hudState.pct) {
+            animateHudNumber('hud-mandate-pct', hudState.pct, targetPct, 450, (v) => `${v}%`, null);
+            document.getElementById('hud-mandate-bar').style.width = `${targetPct}%`;
+            hudState.pct = targetPct;
+          }
+
+          // Smooth Treasury transition
+          if (currentTreasury !== hudState.treasury) {
+            const punch = currentTreasury > hudState.treasury ? 'hud-punch-gold' : 'hud-punch-down';
+            animateHudNumber('hud-treasury-val', hudState.treasury, currentTreasury, 400, (v) => `$${v}`, punch);
+            hudState.treasury = currentTreasury;
+          }
+
+          // Hands remaining punch
+          if (currentHands !== hudState.handsRemaining) {
+            const handsElem = document.getElementById('hud-hands-count');
+            handsElem.textContent = `${currentHands}/${gameState.baseHands}`;
+            handsElem.classList.remove('hud-punch-action');
+            void handsElem.offsetWidth;
+            handsElem.classList.add('hud-punch-action');
+            setTimeout(() => handsElem.classList.remove('hud-punch-action'), 350);
+            hudState.handsRemaining = currentHands;
+          } else {
+            document.getElementById('hud-hands-count').textContent = `${currentHands}/${gameState.baseHands}`;
+          }
+
+          // Discards remaining punch
+          if (currentDiscards !== hudState.discardsRemaining) {
+            const discardsElem = document.getElementById('hud-discards-count');
+            discardsElem.textContent = `${currentDiscards}/${gameState.baseDiscards}`;
+            discardsElem.classList.remove('hud-punch-action');
+            void discardsElem.offsetWidth;
+            discardsElem.classList.add('hud-punch-action');
+            setTimeout(() => discardsElem.classList.remove('hud-punch-action'), 350);
+            hudState.discardsRemaining = currentDiscards;
+          } else {
+            document.getElementById('hud-discards-count').textContent = `${currentDiscards}/${gameState.baseDiscards}`;
+          }
+        }
 
         // Action button states
         const selectedCount = gameState.selectedCardIds.length;
@@ -1959,6 +2303,7 @@
     const gameController = {
       startNewGame() {
         gameState.reset();
+        hudState.initialized = false;
         careerStats.recordTerm(1);
         closeAllModals();
         this.dealNewHand();
@@ -2124,6 +2469,17 @@
         gameAudio.playGameOver();
         gameState.clearSavedState();
 
+        // Automatically record to National Leaderboard if significant score achieved
+        if (gameState.mandate > 0 || gameState.bestHandScore > 0) {
+          leaderboardSystem.recordRunResult({
+            runId: gameState.runId,
+            term: gameState.term,
+            mandate: Math.max(gameState.mandate, gameState.bestHandScore),
+            bills: gameState.totalBillsPassed,
+            cabinet: gameState.cabinet.map(c => c.name).join(', ') || 'Independent Cabinet'
+          });
+        }
+
         document.getElementById('gameover-terms').textContent = gameState.term;
         document.getElementById('gameover-best-hand').textContent = gameState.bestHandScore.toLocaleString();
         document.getElementById('gameover-total-bills').textContent = gameState.totalBillsPassed;
@@ -2133,6 +2489,15 @@
       },
 
       showVictoryModal() {
+        // Record triumphant victory run
+        leaderboardSystem.recordRunResult({
+          runId: gameState.runId,
+          term: gameState.term,
+          mandate: gameState.mandate,
+          bills: gameState.totalBillsPassed,
+          cabinet: gameState.cabinet.map(c => c.name).join(', ') || 'Historic Cabinet'
+        });
+
         document.getElementById('victory-total-mandate').textContent = gameState.mandate.toLocaleString();
         document.getElementById('victory-best-hand').textContent = gameState.bestHandScore.toLocaleString();
         document.getElementById('modal-victory').classList.remove('hidden');
@@ -2375,6 +2740,391 @@
         openStatsModal();
       }
     }
+
+    /* =========================================================================
+       11.B NATIONAL ONLINE LEADERBOARD ENGINE (FULL-STACK LIVE SERVER)
+       ========================================================================= */
+    class CongressionalLeaderboard {
+      constructor() {
+        this.currentCategory = 'mandate'; // 'mandate' | 'term' | 'bills'
+        this.playerName = localStorage.getItem('cabinet_player_name') || 'PRESIDENT YOU';
+        this.onlineEntries = [];
+        this.isOnline = false;
+        this.isLoading = false;
+        this.userSubmittedIds = new Set(JSON.parse(localStorage.getItem('cabinet_submitted_ids') || '[]'));
+        
+        // Clean out any legacy mock seed caches if present
+        try {
+          const raw = localStorage.getItem('cabinet_leaderboard_cache');
+          if (raw && (raw.includes('CHIEF_OF_STAFF_X') || raw.includes('pres_1') || raw.includes('run_alpha_'))) {
+            localStorage.removeItem('cabinet_leaderboard_cache');
+          }
+          const legacyData = localStorage.getItem('cabinet_leaderboard_data');
+          if (legacyData) localStorage.removeItem('cabinet_leaderboard_data');
+        } catch (e) {}
+
+        // Initial fetch from live server
+        this.fetchOnlineLeaderboard();
+        this.fetchServerStats();
+      }
+
+      getPlayerName() {
+        return this.playerName;
+      }
+
+      updatePlayerName(name) {
+        const cleaned = name.trim().toUpperCase().substring(0, 16) || 'PRESIDENT YOU';
+        this.playerName = cleaned;
+        localStorage.setItem('cabinet_player_name', cleaned);
+        const input = document.getElementById('lb-player-name-input');
+        if (input) input.value = cleaned;
+      }
+
+      async fetchServerStats() {
+        try {
+          const res = await fetch('/api/leaderboard/stats');
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success) {
+              const runsElem = document.getElementById('lb-stat-total-runs');
+              const mandateElem = document.getElementById('lb-stat-top-mandate');
+              const billsElem = document.getElementById('lb-stat-total-bills');
+              if (runsElem) runsElem.textContent = `${data.totalRuns} Runs`;
+              if (mandateElem) mandateElem.textContent = `${data.highestMandate.toLocaleString()} pts`;
+              if (billsElem) billsElem.textContent = `${data.totalBillsPassed.toLocaleString()}`;
+            }
+          }
+        } catch (e) {
+          console.warn('Server stats fetch notice:', e);
+        }
+      }
+
+      async fetchOnlineLeaderboard() {
+        this.isLoading = true;
+        try {
+          const res = await fetch(`/api/leaderboard?category=${this.currentCategory}&limit=60`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && Array.isArray(data.entries)) {
+              this.onlineEntries = data.entries;
+              this.isOnline = true;
+              this.updateOnlineBadge(true);
+              this.saveLocalBackup(data.entries);
+            }
+          } else {
+            throw new Error('Server returned non-200');
+          }
+        } catch (err) {
+          console.warn('Live leaderboard backend offline, using local cache:', err);
+          this.isOnline = false;
+          this.updateOnlineBadge(false);
+          this.onlineEntries = this.getLocalBackup();
+        } finally {
+          this.isLoading = false;
+          this.renderTable();
+          this.fetchServerStats();
+        }
+      }
+
+      updateOnlineBadge(online) {
+        const badge = document.getElementById('lb-online-badge');
+        if (badge) {
+          if (online) {
+            badge.className = 'bg-emerald-100 text-emerald-800 border border-emerald-800 text-[10px] font-black px-1.5 py-0.5 flex items-center gap-1';
+            badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>LIVE SERVER</span>';
+          } else {
+            badge.className = 'bg-amber-100 text-amber-800 border border-amber-800 text-[10px] font-black px-1.5 py-0.5 flex items-center gap-1';
+            badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-500"></span><span>CACHED MODE</span>';
+          }
+        }
+      }
+
+      getLocalBackup() {
+        try {
+          const raw = localStorage.getItem('cabinet_leaderboard_cache');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) return parsed;
+          }
+        } catch (e) {
+          console.warn('Cache error:', e);
+        }
+        return [];
+      }
+
+      saveLocalBackup(entries) {
+        localStorage.setItem('cabinet_leaderboard_cache', JSON.stringify(entries));
+      }
+
+      async recordRunResult(runData) {
+        const name = (this.playerName || 'PRESIDENT YOU').trim().toUpperCase();
+        const payload = {
+          runId: runData.runId || gameState.runId || `run_${Date.now()}`,
+          name,
+          term: runData.term || gameState.term,
+          mandate: runData.mandate || gameState.mandate,
+          bills: runData.bills || gameState.totalBillsPassed,
+          cabinet: runData.cabinet || (gameState.cabinet.map(c => c.name).join(', ') || 'Independent Administration')
+        };
+
+        try {
+          const res = await fetch('/api/leaderboard', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.entry) {
+              this.userSubmittedIds.add(data.entry.id);
+              if (data.entry.runId) this.userSubmittedIds.add(data.entry.runId);
+              localStorage.setItem('cabinet_submitted_ids', JSON.stringify(Array.from(this.userSubmittedIds)));
+              
+              // Remove prior instance if updated
+              const existingIdx = this.onlineEntries.findIndex(e => e.runId === data.entry.runId || e.id === data.entry.id);
+              if (existingIdx !== -1) {
+                this.onlineEntries[existingIdx] = data.entry;
+              } else {
+                this.onlineEntries.unshift(data.entry);
+              }
+              this.fetchOnlineLeaderboard();
+              return data.entry;
+            }
+          }
+        } catch (e) {
+          console.warn('Failed to publish run online, storing locally:', e);
+        }
+
+        // Fallback local insertion
+        const localEntry = {
+          id: 'user_' + Date.now(),
+          runId: payload.runId,
+          name,
+          term: payload.term,
+          mandate: payload.mandate,
+          bills: payload.bills,
+          cabinet: payload.cabinet,
+          createdAt: new Date().toISOString(),
+          isUser: true
+        };
+        this.userSubmittedIds.add(localEntry.id);
+        localStorage.setItem('cabinet_submitted_ids', JSON.stringify(Array.from(this.userSubmittedIds)));
+        const existingIdx = this.onlineEntries.findIndex(e => e.runId === localEntry.runId);
+        if (existingIdx !== -1) {
+          this.onlineEntries[existingIdx] = localEntry;
+        } else {
+          this.onlineEntries.unshift(localEntry);
+        }
+        this.renderTable();
+        return localEntry;
+      }
+
+      setCategory(cat) {
+        this.currentCategory = cat;
+        // Tab UI styling
+        ['mandate', 'term', 'bills'].forEach(c => {
+          const tab = document.getElementById(`lb-tab-${c}`);
+          if (tab) {
+            if (c === cat) {
+              tab.className = 'btn-brutal bg-safetyYellow px-2.5 py-1 text-xs font-black';
+            } else {
+              tab.className = 'btn-brutal bg-white px-2.5 py-1 text-xs font-bold';
+            }
+          }
+        });
+        this.fetchOnlineLeaderboard();
+      }
+
+      refreshOnlineData() {
+        gameAudio.playCardDraw();
+        this.fetchOnlineLeaderboard();
+        this.fetchServerStats();
+        gameUI.showFloatingNotice('REFRESHING LIVE ROSTER...', '#FEF08A');
+      }
+
+      openModal() {
+        gameAudio.playSelect();
+        const input = document.getElementById('lb-player-name-input');
+        if (input) input.value = this.playerName;
+
+        const career = careerStats.getStats();
+        const pb = document.getElementById('lb-user-pb');
+        if (pb) pb.textContent = `${career.bestHand.toLocaleString()} PTS (Max Term: ${career.maxTerm})`;
+
+        this.setCategory(this.currentCategory || 'mandate');
+        document.getElementById('modal-leaderboard').classList.remove('hidden');
+        this.fetchOnlineLeaderboard();
+        this.fetchServerStats();
+      }
+
+      closeModal() {
+        document.getElementById('modal-leaderboard').classList.add('hidden');
+      }
+
+      openSubmitNamePrompt() {
+        gameAudio.playSelect();
+        const currentMandate = Math.max(gameState.mandate, gameState.bestHandScore);
+        if (currentMandate <= 0 && gameState.totalBillsPassed <= 0) {
+          gameUI.showFloatingNotice('NO ACTIVE RUN SCORE RECORDED YET', '#FCA5A5');
+          return;
+        }
+
+        const input = document.getElementById('modal-player-name-input');
+        if (input) {
+          input.value = this.playerName !== 'PRESIDENT YOU' ? this.playerName : '';
+          setTimeout(() => input.focus(), 50);
+        }
+
+        const preview = document.getElementById('submit-dialog-run-preview');
+        if (preview) {
+          preview.textContent = `TERM ${gameState.term} • ${currentMandate.toLocaleString()} PTS • ${gameState.totalBillsPassed} BILLS`;
+        }
+
+        document.getElementById('modal-submit-name').classList.remove('hidden');
+      }
+
+      cancelNamePrompt() {
+        document.getElementById('modal-submit-name').classList.add('hidden');
+      }
+
+      async confirmSubmitWithName() {
+        const input = document.getElementById('modal-player-name-input');
+        let chosenName = (input?.value || this.playerName || 'PRESIDENT YOU').trim().toUpperCase().substring(0, 16);
+        if (!chosenName) chosenName = 'PRESIDENT YOU';
+        this.updatePlayerName(chosenName);
+        this.cancelNamePrompt();
+
+        const btn = document.getElementById('btn-lb-submit-run');
+        if (btn) {
+          btn.textContent = 'TRANSMITTING RUN...';
+          btn.classList.add('opacity-75');
+        }
+
+        const currentMandate = Math.max(gameState.mandate, gameState.bestHandScore);
+        await this.recordRunResult({
+          runId: gameState.runId,
+          term: gameState.term,
+          mandate: currentMandate,
+          bills: gameState.totalBillsPassed,
+          cabinet: gameState.cabinet.map(c => c.name).join(', ') || 'Independent Cabinet'
+        });
+
+        if (btn) {
+          btn.textContent = '✅ RUN TRANSMITTED / UPDATED';
+          setTimeout(() => {
+            if (btn) btn.textContent = '⬆️ SUBMIT ACTIVE RUN TO ONLINE SERVER';
+          }, 3000);
+          btn.classList.remove('opacity-75');
+        }
+
+        gameUI.showFloatingNotice(`SUBMITTED AS "${chosenName}"!`, '#86EFAC');
+        this.fetchOnlineLeaderboard();
+      }
+
+      clearLocalCache() {
+        if (confirm('Clear cached leaderboard entries and refresh from online server?')) {
+          localStorage.removeItem('cabinet_leaderboard_cache');
+          this.fetchOnlineLeaderboard();
+        }
+      }
+
+      formatTimeAgo(dateString) {
+        if (!dateString) return 'Active';
+        try {
+          const diffMs = Date.now() - new Date(dateString).getTime();
+          const diffMins = Math.floor(diffMs / 60000);
+          if (diffMins < 1) return 'Just now';
+          if (diffMins < 60) return `${diffMins}m ago`;
+          const diffHours = Math.floor(diffMins / 60);
+          if (diffHours < 24) return `${diffHours}h ago`;
+          const diffDays = Math.floor(diffHours / 24);
+          return `${diffDays}d ago`;
+        } catch (e) {
+          return 'Recent';
+        }
+      }
+
+      renderTable() {
+        const rowsContainer = document.getElementById('lb-table-rows');
+        if (!rowsContainer) return;
+
+        let list = [...this.onlineEntries];
+
+        // Sort by active category
+        if (this.currentCategory === 'term') {
+          list.sort((a, b) => b.term - a.term || b.mandate - a.mandate);
+        } else if (this.currentCategory === 'bills') {
+          list.sort((a, b) => b.bills - a.bills || b.mandate - a.mandate);
+        } else {
+          // Default: Mandate score
+          list.sort((a, b) => b.mandate - a.mandate || b.term - a.term);
+        }
+
+        rowsContainer.innerHTML = '';
+
+        if (list.length === 0) {
+          rowsContainer.innerHTML = `
+            <div class="p-6 text-center text-neutral-500 font-bold uppercase">
+              No online campaign submissions yet. Complete a campaign or click Submit to be #1!
+            </div>
+          `;
+          return;
+        }
+
+        list.slice(0, 50).forEach((entry, idx) => {
+          const rank = idx + 1;
+          let rankClass = '';
+          let medal = `#${rank}`;
+          if (rank === 1) {
+            rankClass = 'lb-row-gold';
+            medal = '🥇 1';
+          } else if (rank === 2) {
+            rankClass = 'lb-row-silver';
+            medal = '🥈 2';
+          } else if (rank === 3) {
+            rankClass = 'lb-row-bronze';
+            medal = '🥉 3';
+          }
+
+          let valDisplay = '';
+          if (this.currentCategory === 'term') {
+            valDisplay = `Term ${entry.term}`;
+          } else if (this.currentCategory === 'bills') {
+            valDisplay = `${entry.bills} Bills`;
+          } else {
+            valDisplay = `${entry.mandate.toLocaleString()} pts`;
+          }
+
+          const isUserRun = this.userSubmittedIds.has(entry.id) || entry.isUser || (entry.name === this.playerName && this.playerName !== 'PRESIDENT YOU');
+          const userHighlight = isUserRun ? 'lb-row-user bg-mint/20 font-black' : '';
+          const timeAgo = this.formatTimeAgo(entry.createdAt || entry.date);
+
+          const row = document.createElement('div');
+          row.className = `grid grid-cols-12 p-2.5 items-center hover:bg-yellow-50 transition-colors ${rankClass} ${userHighlight}`;
+          row.innerHTML = `
+            <div class="col-span-2 text-center font-black text-xs sm:text-sm text-neutral-800">${medal}</div>
+            <div class="col-span-5 pr-1">
+              <div class="font-black text-xs uppercase truncate text-black flex items-center gap-1">
+                ${isUserRun ? '<span class="text-[9px] bg-black text-safetyYellow px-1 py-0.2 font-black">YOU</span>' : '<span class="text-[9px] bg-skyBlue border border-black px-1 font-bold">ONLINE</span>'}
+                <span class="truncate">${entry.name || 'PRESIDENT'}</span>
+              </div>
+              <div class="text-[10px] text-neutral-500 font-bold truncate flex items-center gap-1.5">
+                <span>${entry.cabinet || 'Cabinet'}</span>
+                <span>•</span>
+                <span class="text-neutral-400">${timeAgo}</span>
+              </div>
+            </div>
+            <div class="col-span-2 text-center text-[11px] font-black text-neutral-700">T-${entry.term}</div>
+            <div class="col-span-3 text-right font-black text-xs sm:text-sm text-black">
+              ${valDisplay}
+            </div>
+          `;
+          rowsContainer.appendChild(row);
+        });
+      }
+    }
+
+    const leaderboardSystem = new CongressionalLeaderboard();
 
     /* =========================================================================
        12. GAME INITIALIZATION ON PAGE LOAD

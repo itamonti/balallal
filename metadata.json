@@ -2,5 +2,7 @@
   "name": "CABINET: Balatro Politics",
   "description": "A roguelike neo-brutalist political deckbuilder inspired by Balatro, featuring procedural Phaser 3 card graphics, Cabinet modifiers, legislative actions, and federal shop mechanics.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
