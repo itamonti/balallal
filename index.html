@@ -1,0 +1,2396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>CABINET: Balatro Politics</title>
+
+  <!-- Google Fonts: Space Grotesk, Space Mono & JetBrains Mono for Geometric Balance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Plus+Jakarta+Sans:wght@700;800;900&family=Space+Grotesk:wght@500;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['"Space Mono"', '"JetBrains Mono"', 'monospace'],
+            sans: ['"Space Grotesk"', '"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+          },
+          colors: {
+            manila: '#FFFDF5',
+            manilaDark: '#FEF3C7',
+            coral: '#FCA5A5',
+            coralDark: '#E11D48',
+            mint: '#86EFAC',
+            mintDark: '#059669',
+            safetyYellow: '#FDE047',
+            safetyYellowDark: '#D97706',
+            skyBlue: '#7DD3FC',
+            skyBlueDark: '#0284C7',
+            lavender: '#DDD6FE',
+            lavenderDark: '#7C3AED',
+            cabinetBg: '#F5F2EB',
+            tableFelt: '#ECE8DE',
+            geoBlack: '#121316',
+          },
+          boxShadow: {
+            geo: '3px 3px 0px #121316',
+            'geo-lg': '5px 5px 0px #121316',
+            'geo-sm': '2px 2px 0px #121316',
+            'geo-inset': 'inset 2px 2px 0px rgba(18, 19, 22, 0.15)',
+            brutal: '3px 3px 0px #121316',
+            'brutal-lg': '5px 5px 0px #121316',
+            'brutal-sm': '2px 2px 0px #121316',
+            'brutal-inset': 'inset 2px 2px 0px rgba(18, 19, 22, 0.15)',
+          },
+          borderWidth: {
+            '2.5': '2.5px',
+            '3': '3px',
+            '4': '4px',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Phaser 3 via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
+
+  <style>
+    /* Geometric Balance Base Styles */
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    body {
+      background-color: #F5F2EB;
+      background-image: 
+        radial-gradient(#121316 0.75px, transparent 0.75px), 
+        radial-gradient(#121316 0.75px, #F5F2EB 0.75px);
+      background-size: 24px 24px;
+      background-position: 0 0, 12px 12px;
+      color: #121316;
+      font-family: 'Space Mono', 'JetBrains Mono', monospace;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Geometric Balance Buttons & Interactive Elements */
+    .btn-brutal, .btn-geo {
+      border: 2.5px solid #121316;
+      box-shadow: 3px 3px 0px #121316;
+      transition: transform 0.08s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.08s cubic-bezier(0.4, 0, 0.2, 1);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .btn-brutal:hover:not(:disabled), .btn-geo:hover:not(:disabled) {
+      transform: translate(-1.5px, -1.5px);
+      box-shadow: 4.5px 4.5px 0px #121316;
+    }
+    .btn-brutal:active:not(:disabled), .btn-geo:active:not(:disabled) {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #121316;
+    }
+    .btn-brutal:disabled, .btn-geo:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      box-shadow: 1.5px 1.5px 0px #121316;
+      transform: none;
+    }
+
+    .card-brutal, .card-geo {
+      border: 2.5px solid #121316;
+      box-shadow: 3px 3px 0px #121316;
+    }
+
+    /* Screen Shake Animation Class */
+    @keyframes screenShakeAnim {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      20% { transform: translate(-3px, 3px) rotate(-0.4deg); }
+      40% { transform: translate(3px, -2px) rotate(0.4deg); }
+      60% { transform: translate(-2px, -2px) rotate(-0.2deg); }
+      80% { transform: translate(2px, 2px) rotate(0.2deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+    .shake-screen {
+      animation: screenShakeAnim 0.3s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    /* Pulse Glow for Geometric Elements */
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(18,19,22,0)); }
+      50% { transform: scale(1.03); filter: drop-shadow(0 0 6px #FDE047); }
+    }
+    .pulse-cabinet {
+      animation: pulseGlow 0.4s ease-in-out;
+    }
+
+    /* Custom Geometric Scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #FFFDF5;
+      border: 2px solid #121316;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #121316;
+    }
+
+    /* Phaser Canvas Container */
+    #phaser-game-container canvas {
+      display: block;
+      margin: 0 auto;
+      border: 2.5px solid #121316;
+      box-shadow: 3px 3px 0px #121316;
+      border-radius: 4px;
+      background-color: #ECE8DE;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-cabinetBg flex flex-col items-center justify-start p-2 sm:p-4 text-black selection:bg-safetyYellow">
+
+  <!-- TOP BRANDING & SETTINGS STRIP -->
+  <header class="w-full max-w-5xl flex items-center justify-between border-3 border-black bg-manila p-2.5 sm:p-3 shadow-brutal mb-3">
+    <div class="flex items-center gap-2">
+      <div class="bg-black text-manila px-2 py-1 font-black text-sm sm:text-base tracking-widest uppercase">
+        GOV.EXE
+      </div>
+      <div>
+        <h1 class="text-base sm:text-xl font-black tracking-tight leading-none uppercase">
+          CABINET: <span class="bg-safetyYellow px-1 border-2 border-black">BALATRO POLITICS</span>
+        </h1>
+        <p class="text-[10px] sm:text-xs text-neutral-700 font-bold uppercase tracking-wider mt-0.5">
+          POLITICAL DECKBUILDER // MANDATE ENGINE v1.0
+        </p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button id="btn-sound-toggle" onclick="gameAudio.toggle()" class="btn-brutal bg-white px-2.5 py-1 text-xs flex items-center gap-1">
+        <span id="sound-icon">🔊</span>
+        <span class="hidden sm:inline" id="sound-text">AUDIO ON</span>
+      </button>
+      <button id="btn-rules-modal" onclick="openRulesModal()" class="btn-brutal bg-skyBlue px-2.5 py-1 text-xs">
+        📖 RULES
+      </button>
+      <button id="btn-deck-modal" onclick="openDeckModal()" class="btn-brutal bg-mint px-2.5 py-1 text-xs">
+        🗂️ DECK (<span id="header-deck-count">52</span>)
+      </button>
+      <button id="btn-stats-modal" onclick="openStatsModal()" class="btn-brutal bg-safetyYellow px-2.5 py-1 text-xs">
+        🏆 STATS
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN HUD: TERM, MANDATE, TREASURY, ACTIONS -->
+  <div class="w-full max-w-5xl grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+    <!-- Term & Crisis Badge -->
+    <div class="border-3 border-black bg-white p-2 sm:p-3 shadow-brutal flex flex-col justify-between">
+      <div class="flex justify-between items-center text-xs font-bold text-neutral-600 uppercase">
+        <span>CURRENT TERM</span>
+        <span id="hud-term-badge" class="bg-black text-white px-1.5 py-0.5 text-[10px]">TERM 1</span>
+      </div>
+      <div class="my-1">
+        <div id="hud-term-name" class="text-sm sm:text-base font-black truncate uppercase">INAUGURATION</div>
+        <div id="hud-crisis-desc" class="text-[10px] text-neutral-700 font-bold truncate leading-tight">Standard Legislative Session</div>
+      </div>
+      <div class="text-[10px] font-bold bg-manila px-1.5 py-0.5 border-2 border-black inline-block text-center">
+        TERM TARGET: <span id="hud-term-target" class="font-black text-coralDark">300</span>
+      </div>
+    </div>
+
+    <!-- Mandate (Score) Meter -->
+    <div class="border-3 border-black bg-manila p-2 sm:p-3 shadow-brutal flex flex-col justify-between">
+      <div class="flex justify-between items-center text-xs font-bold text-neutral-600 uppercase">
+        <span>MANDATE SCORE</span>
+        <span id="hud-mandate-pct" class="text-[10px] font-black bg-safetyYellow px-1 border border-black">0%</span>
+      </div>
+      <div class="my-1 flex items-baseline gap-1">
+        <span id="hud-current-mandate" class="text-xl sm:text-2xl font-black tracking-tight text-black">0</span>
+        <span class="text-xs font-bold text-neutral-500">/ <span id="hud-target-mandate">300</span></span>
+      </div>
+      <!-- Progress Bar -->
+      <div class="w-full h-3 border-2 border-black bg-white p-0.5 overflow-hidden">
+        <div id="hud-mandate-bar" class="h-full bg-mintDark transition-all duration-300" style="width: 0%;"></div>
+      </div>
+    </div>
+
+    <!-- Legislative Actions (Hands & Discards) -->
+    <div class="border-3 border-black bg-white p-2 sm:p-3 shadow-brutal flex flex-col justify-between">
+      <div class="text-xs font-bold text-neutral-600 uppercase">
+        SESSION ACTIONS
+      </div>
+      <div class="grid grid-cols-2 gap-1 my-1">
+        <div class="bg-skyBlue border-2 border-black p-1 text-center">
+          <div class="text-[10px] font-black leading-none uppercase">HANDS</div>
+          <div id="hud-hands-count" class="text-lg sm:text-xl font-black leading-none mt-1">3/3</div>
+        </div>
+        <div class="bg-coral border-2 border-black p-1 text-center">
+          <div class="text-[10px] font-black leading-none uppercase">DISCARDS</div>
+          <div id="hud-discards-count" class="text-lg sm:text-xl font-black leading-none mt-1">3/3</div>
+        </div>
+      </div>
+      <div class="text-[9px] text-center font-bold text-neutral-600 uppercase">
+        3 Hands to meet Target
+      </div>
+    </div>
+
+    <!-- Federal Treasury (Money) -->
+    <div class="border-3 border-black bg-safetyYellow p-2 sm:p-3 shadow-brutal flex flex-col justify-between">
+      <div class="flex justify-between items-center text-xs font-bold text-neutral-800 uppercase">
+        <span>FEDERAL TREASURY</span>
+        <span class="text-[10px] font-black">BUDGET</span>
+      </div>
+      <div class="my-1 flex items-center justify-between">
+        <span id="hud-treasury-val" class="text-2xl sm:text-3xl font-black tracking-tight text-black">$8</span>
+        <span class="text-2xl">💰</span>
+      </div>
+      <div class="text-[10px] font-bold bg-white px-1.5 py-0.5 border-2 border-black text-center truncate">
+        +$1 PER UNUSED HAND
+      </div>
+    </div>
+  </div>
+
+  <!-- CABINET MEMBERS (PASSIVE MODIFIERS / JOKERS) STRIP -->
+  <div class="w-full max-w-5xl border-3 border-black bg-white p-2.5 sm:p-3 shadow-brutal mb-3">
+    <div class="flex items-center justify-between mb-2">
+      <div class="flex items-center gap-2">
+        <span class="bg-black text-white text-xs px-2 py-0.5 font-bold uppercase tracking-wider">
+          ACTIVE CABINET
+        </span>
+        <span id="cabinet-slot-count" class="text-xs font-bold text-neutral-600">
+          (0/3 SLOTS OCCUPIED)
+        </span>
+      </div>
+      <span class="text-[10px] text-neutral-500 font-bold uppercase">
+        PASSIVE LEGISLATIVE MODIFIERS
+      </span>
+    </div>
+
+    <!-- 3-4 Cabinet Slots Grid -->
+    <div id="cabinet-rack" class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-2">
+      <!-- Slot 1 -->
+      <div id="cabinet-slot-0" class="border-3 border-dashed border-neutral-400 bg-neutral-100 p-2 min-h-[72px] flex items-center justify-center text-xs font-bold text-neutral-400 uppercase text-center rounded">
+        EMPTY CABINET SEAT
+      </div>
+      <!-- Slot 2 -->
+      <div id="cabinet-slot-1" class="border-3 border-dashed border-neutral-400 bg-neutral-100 p-2 min-h-[72px] flex items-center justify-center text-xs font-bold text-neutral-400 uppercase text-center rounded">
+        EMPTY CABINET SEAT
+      </div>
+      <!-- Slot 3 -->
+      <div id="cabinet-slot-2" class="border-3 border-dashed border-neutral-400 bg-neutral-100 p-2 min-h-[72px] flex items-center justify-center text-xs font-bold text-neutral-400 uppercase text-center rounded">
+        EMPTY CABINET SEAT
+      </div>
+      <!-- Slot 4 (Hidden until Constitutional Amendment) -->
+      <div id="cabinet-slot-3" class="hidden border-3 border-dashed border-neutral-400 bg-neutral-100 p-2 min-h-[72px] flex items-center justify-center text-xs font-bold text-neutral-400 uppercase text-center rounded">
+        LOCKED (NEEDS AMENDMENT)
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASER 3 GAME AREA (LEGISLATIVE CHAMBER & HAND) -->
+  <div class="w-full max-w-5xl relative mb-3">
+    <!-- Dynamic Hand Evaluation Floating Banner -->
+    <div id="hand-eval-banner" class="w-full border-3 border-black bg-white p-2 shadow-brutal mb-2 flex items-center justify-between transition-all">
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-bold bg-black text-white px-2 py-0.5 uppercase">DETECTED BILL:</span>
+        <span id="eval-hand-name" class="text-sm sm:text-base font-black uppercase text-black">NO CARDS SELECTED</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="bg-skyBlue border-2 border-black px-2 py-0.5 text-xs font-black">
+          CAPITAL: <span id="eval-capital-val" class="text-blue-900">0</span>
+        </div>
+        <span class="font-black text-sm">×</span>
+        <div class="bg-coral border-2 border-black px-2 py-0.5 text-xs font-black">
+          APPROVAL: <span id="eval-mult-val" class="text-red-900">0</span>
+        </div>
+        <span class="font-black text-sm">=</span>
+        <div class="bg-safetyYellow border-2 border-black px-2 py-0.5 text-xs font-black">
+          EST. MANDATE: <span id="eval-total-val" class="text-black">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phaser Canvas Container -->
+    <div id="phaser-game-container" class="w-full flex justify-center overflow-hidden">
+      <!-- Phaser will inject canvas here -->
+    </div>
+  </div>
+
+  <!-- CONTROL ACTION BAR -->
+  <div class="w-full max-w-5xl grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+    <!-- Play Hand Button -->
+    <button id="btn-play-hand" onclick="gameController.playSelectedHand()" class="btn-brutal bg-mint hover:bg-mintDark p-3 text-sm sm:text-base font-black flex items-center justify-center gap-2">
+      <span>⚖️</span>
+      <span>PASS LEGISLATION</span>
+    </button>
+
+    <!-- Discard Button -->
+    <button id="btn-discard" onclick="gameController.discardSelectedCards()" class="btn-brutal bg-coral hover:bg-coralDark p-3 text-sm sm:text-base font-black flex items-center justify-center gap-2">
+      <span>🗑️</span>
+      <span>VETO & DISCARD</span>
+    </button>
+
+    <!-- Sort by Faction -->
+    <button id="btn-sort-suit" onclick="gameController.sortHand('faction')" class="btn-brutal bg-skyBlue hover:bg-skyBlueDark p-3 text-xs sm:text-sm font-bold flex items-center justify-center gap-1">
+      <span>🏛️</span>
+      <span>SORT FACTION</span>
+    </button>
+
+    <!-- Sort by Rank -->
+    <button id="btn-sort-rank" onclick="gameController.sortHand('rank')" class="btn-brutal bg-safetyYellow hover:bg-safetyYellowDark p-3 text-xs sm:text-sm font-bold flex items-center justify-center gap-1">
+      <span>📈</span>
+      <span>SORT RANK</span>
+    </button>
+  </div>
+
+  <!-- FOOTER STATS & ATTRIBUTION -->
+  <footer class="w-full max-w-5xl flex flex-col sm:flex-row items-center justify-between text-xs text-neutral-600 font-bold border-t-2 border-black pt-3 mb-6 gap-2">
+    <div>
+      FACTIONS: <span class="text-coralDark font-black">✊ LABOR</span> | <span class="text-mintDark font-black">🏭 INDUSTRY</span> | <span class="text-skyBlueDark font-black">🎖️ MILITARY</span> | <span class="text-safetyYellowDark font-black">📡 MEDIA</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="gameController.resetGameConfirm()" class="underline hover:text-black">RESTART ADMINISTRATION</button>
+      <span>•</span>
+      <span>OFFLINE CAPABLE & SAVED TO LOCALSTORAGE</span>
+    </div>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL DIALOGS (FEDERAL SHOP, GAME OVER, VICTORY, RULES, DECK, STATS)      -->
+  <!-- ========================================================================= -->
+
+  <!-- 1. FEDERAL SHOP MODAL -->
+  <div id="modal-shop" class="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-3 hidden">
+    <div class="bg-manila border-4 border-black shadow-brutal-lg w-full max-w-4xl max-h-[92vh] overflow-y-auto p-4 sm:p-6 flex flex-col justify-between">
+      <div>
+        <div class="flex justify-between items-start border-b-3 border-black pb-3 mb-4">
+          <div>
+            <div class="bg-black text-safetyYellow px-2 py-0.5 text-xs font-black inline-block uppercase">
+              CONGRESSIONAL RECESS
+            </div>
+            <h2 class="text-xl sm:text-2xl font-black uppercase mt-1">FEDERAL APPOINTMENTS & BILL SHOP</h2>
+            <p class="text-xs text-neutral-700 font-bold">Appoint new Cabinet Ministers and enact permanent Federal Vouchers.</p>
+          </div>
+          <div class="text-right">
+            <div class="text-xs font-bold text-neutral-600 uppercase">TREASURY</div>
+            <div id="shop-treasury-val" class="text-2xl sm:text-3xl font-black text-black">$12</div>
+          </div>
+        </div>
+
+        <!-- Shop Grid: Cabinet Members -->
+        <div class="mb-4">
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="text-sm font-black uppercase bg-skyBlue px-2 py-0.5 border-2 border-black inline-block">
+              CABINET CANDIDATES (AVAILABLE FOR HIRE)
+            </h3>
+            <span class="text-xs text-neutral-600 font-bold">MAX 3-4 ACTIVE MEMBERS</span>
+          </div>
+          <div id="shop-cabinet-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Shop Grid: Federal Policy Vouchers / Bill Packs -->
+        <div class="mb-4">
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="text-sm font-black uppercase bg-mint px-2 py-0.5 border-2 border-black inline-block">
+              POLICY VOUCHERS & LEGISLATIVE PACKS
+            </h3>
+          </div>
+          <div id="shop-vouchers-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Shop Actions Footer -->
+      <div class="border-t-3 border-black pt-4 mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <button id="btn-shop-reroll" onclick="gameShop.reroll()" class="btn-brutal bg-safetyYellow px-4 py-2.5 text-xs sm:text-sm font-black w-full sm:w-auto">
+          🎲 REROLL APPOINTMENTS ($<span id="shop-reroll-cost">3</span>)
+        </button>
+        <button onclick="gameShop.proceedToNextTerm()" class="btn-brutal bg-mint hover:bg-mintDark px-6 py-3 text-sm sm:text-base font-black w-full sm:w-auto flex items-center justify-center gap-2">
+          <span>🏛️</span>
+          <span>CONVENE NEXT CONGRESS (TERM <span id="shop-next-term-num">2</span>)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. GAME OVER / IMPEACHMENT MODAL -->
+  <div id="modal-gameover" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-3 hidden">
+    <div class="bg-coral border-4 border-black shadow-brutal-lg w-full max-w-lg p-5 sm:p-6 text-center">
+      <div class="bg-black text-white px-3 py-1 font-black text-sm uppercase inline-block mb-2">
+        VOTE OF NO CONFIDENCE
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-black uppercase text-black mb-1">ADMINISTRATION COLLAPSED</h2>
+      <p class="text-xs sm:text-sm font-bold text-neutral-900 mb-4">
+        You failed to meet the required Congressional Mandate before your legislative actions expired.
+      </p>
+
+      <div class="bg-white border-3 border-black p-3 text-left mb-4 space-y-1.5 text-xs font-bold">
+        <div class="flex justify-between border-b pb-1">
+          <span>TERMS SURVIVED:</span>
+          <span id="gameover-terms" class="font-black">1</span>
+        </div>
+        <div class="flex justify-between border-b pb-1">
+          <span>HIGHEST SINGLE-HAND MANDATE:</span>
+          <span id="gameover-best-hand" class="font-black text-coralDark">0</span>
+        </div>
+        <div class="flex justify-between border-b pb-1">
+          <span>TOTAL LEGISLATION PASSED:</span>
+          <span id="gameover-total-bills" class="font-black">0</span>
+        </div>
+        <div class="flex justify-between">
+          <span>FINAL TREASURY BALANCE:</span>
+          <span id="gameover-treasury" class="font-black text-mintDark">$0</span>
+        </div>
+      </div>
+
+      <button onclick="gameController.startNewGame()" class="btn-brutal bg-safetyYellow hover:bg-safetyYellowDark w-full py-3 text-base font-black uppercase">
+        🔄 LAUNCH NEW CAMPAIGN (RESTART)
+      </button>
+    </div>
+  </div>
+
+  <!-- 3. PRESIDENTIAL VICTORY MODAL (TERM 8 CLEAR) -->
+  <div id="modal-victory" class="fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-3 hidden">
+    <div class="bg-mint border-4 border-black shadow-brutal-lg w-full max-w-lg p-5 sm:p-6 text-center">
+      <div class="bg-black text-safetyYellow px-3 py-1 font-black text-sm uppercase inline-block mb-2">
+        HISTORIC LANDSLIDE VICTORY
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-black uppercase text-black mb-1">PRESIDENCY SECURED!</h2>
+      <p class="text-xs sm:text-sm font-bold text-neutral-900 mb-4">
+        You navigated 8 grueling terms of legislative crises, assembled an unstoppable Cabinet, and cemented your legacy!
+      </p>
+
+      <div class="bg-white border-3 border-black p-3 text-left mb-4 space-y-1.5 text-xs font-bold">
+        <div class="flex justify-between border-b pb-1">
+          <span>TOTAL MANDATE GENERATED:</span>
+          <span id="victory-total-mandate" class="font-black text-mintDark">0</span>
+        </div>
+        <div class="flex justify-between border-b pb-1">
+          <span>BEST HAND SCORING:</span>
+          <span id="victory-best-hand" class="font-black text-coralDark">0</span>
+        </div>
+        <div class="flex justify-between">
+          <span>CABINET DISTINCTION:</span>
+          <span class="font-black text-black">MASTER STATESPERSON</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-2">
+        <button onclick="gameController.continueEndlessMode()" class="btn-brutal bg-safetyYellow w-full py-2.5 text-sm font-black uppercase">
+          ♾️ ENTER ENDLESS LEGISLATIVE MODE
+        </button>
+        <button onclick="gameController.startNewGame()" class="btn-brutal bg-white w-full py-2.5 text-sm font-black uppercase">
+          🔄 NEW CAMPAIGN
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. RULES & POKER HAND REFERENCE MODAL -->
+  <div id="modal-rules" class="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-3 hidden">
+    <div class="bg-manila border-4 border-black shadow-brutal-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+      <div class="flex justify-between items-center border-b-3 border-black pb-2 mb-3">
+        <h2 class="text-lg sm:text-xl font-black uppercase">CONSTITUTIONAL RULEBOOK & HAND TYPES</h2>
+        <button onclick="closeRulesModal()" class="btn-brutal bg-coral px-2.5 py-1 text-xs font-black">✕ CLOSE</button>
+      </div>
+
+      <div class="space-y-4 text-xs font-bold text-neutral-800">
+        <div>
+          <h3 class="text-sm font-black uppercase bg-safetyYellow px-1.5 border-2 border-black inline-block mb-1">
+            SCORING FORMULA
+          </h3>
+          <p class="mt-1">
+            <span class="bg-black text-white px-1.5 py-0.5">MANDATE = Base Capital × Approval Multiplier</span>
+          </p>
+          <p class="text-neutral-600 mt-1">
+            Base Capital is the sum of played card values (2-10 = face value, J/Q/K = 10, Ace = 11) plus the Hand Bonus Capital. Approval Multiplier is multiplied by Cabinet modifiers!
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-sm font-black uppercase bg-mint px-1.5 border-2 border-black inline-block mb-1">
+            LEGISLATIVE BILLS (HAND TYPES)
+          </h3>
+          <div class="space-y-1.5 mt-1">
+            <div class="border-2 border-black bg-white p-1.5 flex justify-between items-center">
+              <div><span class="font-black text-black">5-YEAR MONOLITH (Straight Flush):</span> 5 sequential cards in same Faction</div>
+              <div class="bg-safetyYellow px-1.5 border border-black text-[11px]">100 Cap × 8 Mult</div>
+            </div>
+            <div class="border-2 border-black bg-white p-1.5 flex justify-between items-center">
+              <div><span class="font-black text-black">TOTALITARIAN MAJORITY (4 of a Kind):</span> 4 cards of identical rank</div>
+              <div class="bg-safetyYellow px-1.5 border border-black text-[11px]">60 Cap × 5 Mult</div>
+            </div>
+            <div class="border-2 border-black bg-white p-1.5 flex justify-between items-center">
+              <div><span class="font-black text-black">GRAND COALITION (Full House):</span> 3 of a kind + 1 pair</div>
+              <div class="bg-safetyYellow px-1.5 border border-black text-[11px]">40 Cap × 4 Mult</div>
+            </div>
+            <div class="border-2 border-black bg-white p-1.5 flex justify-between items-center">
+              <div><span class="font-black text-black">MONOLITHIC BLOC (Flush):</span> 5 cards of the same Faction</div>
+              <div class="bg-safetyYellow px-1.5 border border-black text-[11px]">35 Cap × 4 Mult</div>
+            </div>
+            <div class="border-2 border-black bg-white p-1.5 flex justify-between items-center">
+              <div><span class="font-black text-black">5-YEAR PLAN (Straight):</span> 5 cards in sequential rank</div>
+              <div class="bg-safetyYellow px-1.5 border border-black text-[11px]">30 Cap × 4 Mult</div>
+            </div>
+            <div class="border-2 border-black bg-white p-1.5 flex justify-between items-center">
+              <div><span class="font-black text-black">SUPERMAJORITY (3 of a Kind):</span> 3 cards of identical rank</div>
+              <div class="bg-safetyYellow px-1.5 border border-black text-[11px]">30 Cap × 3 Mult</div>
+            </div>
+            <div class="border-2 border-black bg-white p-1.5 flex justify-between items-center">
+              <div><span class="font-black text-black">BIPARTISAN COALITION (Two Pair):</span> 2 distinct pairs</div>
+              <div class="bg-safetyYellow px-1.5 border border-black text-[11px]">20 Cap × 2 Mult</div>
+            </div>
+            <div class="border-2 border-black bg-white p-1.5 flex justify-between items-center">
+              <div><span class="font-black text-black">COALITION (Pair):</span> 2 cards of identical rank</div>
+              <div class="bg-safetyYellow px-1.5 border border-black text-[11px]">10 Cap × 2 Mult</div>
+            </div>
+            <div class="border-2 border-black bg-white p-1.5 flex justify-between items-center">
+              <div><span class="font-black text-black">EXECUTIVE FIAT (High Card):</span> Single highest card</div>
+              <div class="bg-safetyYellow px-1.5 border border-black text-[11px]">5 Cap × 1 Mult</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-sm font-black uppercase bg-skyBlue px-1.5 border-2 border-black inline-block mb-1">
+            FACTIONS (SUITS)
+          </h3>
+          <div class="grid grid-cols-2 gap-2 mt-1">
+            <div class="bg-coral p-2 border-2 border-black">
+              <span class="font-black">✊ LABOR (RED)</span><br>
+              <span class="text-[10px] text-neutral-800">Represents workers, unions, and grassroots movements.</span>
+            </div>
+            <div class="bg-mint p-2 border-2 border-black">
+              <span class="font-black">🏭 INDUSTRY (GREEN)</span><br>
+              <span class="text-[10px] text-neutral-800">Represents capital, manufacturing, and commerce.</span>
+            </div>
+            <div class="bg-skyBlue p-2 border-2 border-black">
+              <span class="font-black">🎖️ MILITARY (BLUE)</span><br>
+              <span class="text-[10px] text-neutral-800">Represents national defense, armed forces, and order.</span>
+            </div>
+            <div class="bg-safetyYellow p-2 border-2 border-black">
+              <span class="font-black">📡 MEDIA (YELLOW)</span><br>
+              <span class="text-[10px] text-neutral-800">Represents broadcasting, press, and public opinion.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. DECK INSPECTOR MODAL -->
+  <div id="modal-deck" class="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-3 hidden">
+    <div class="bg-manila border-4 border-black shadow-brutal-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+      <div class="flex justify-between items-center border-b-3 border-black pb-2 mb-3">
+        <div>
+          <h2 class="text-lg sm:text-xl font-black uppercase">FEDERAL DECK MANIFEST</h2>
+          <p class="text-xs text-neutral-600 font-bold">Remaining cards in draw pile (<span id="deck-modal-count">52</span> total)</p>
+        </div>
+        <button onclick="closeDeckModal()" class="btn-brutal bg-coral px-2.5 py-1 text-xs font-black">✕ CLOSE</button>
+      </div>
+
+      <div id="deck-cards-container" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-1.5 text-center text-xs font-black">
+        <!-- Dynamically rendered card tags -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. CAREER STATS MODAL -->
+  <div id="modal-stats" class="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-3 hidden">
+    <div class="bg-manila border-4 border-black shadow-brutal-lg w-full max-w-md p-4 sm:p-6">
+      <div class="flex justify-between items-center border-b-3 border-black pb-2 mb-3">
+        <h2 class="text-lg sm:text-xl font-black uppercase">POLITICAL CAREER RECORD</h2>
+        <button onclick="closeStatsModal()" class="btn-brutal bg-coral px-2.5 py-1 text-xs font-black">✕ CLOSE</button>
+      </div>
+
+      <div class="space-y-2 text-xs font-bold">
+        <div class="bg-white border-2 border-black p-2 flex justify-between">
+          <span>HIGHEST TERM REACHED:</span>
+          <span id="stats-max-term" class="font-black text-black">Term 1</span>
+        </div>
+        <div class="bg-white border-2 border-black p-2 flex justify-between">
+          <span>RECORD SINGLE-HAND MANDATE:</span>
+          <span id="stats-best-hand" class="font-black text-coralDark">0</span>
+        </div>
+        <div class="bg-white border-2 border-black p-2 flex justify-between">
+          <span>TOTAL BILLS ENACTED:</span>
+          <span id="stats-total-hands" class="font-black text-mintDark">0</span>
+        </div>
+        <div class="bg-white border-2 border-black p-2 flex justify-between">
+          <span>SUCCESSFUL ADMINISTRATIONS:</span>
+          <span id="stats-wins" class="font-black text-skyBlueDark">0</span>
+        </div>
+        <div class="bg-white border-2 border-black p-2 flex justify-between">
+          <span>CABINET MEMBERS HIRED:</span>
+          <span id="stats-members-hired" class="font-black">0</span>
+        </div>
+      </div>
+
+      <div class="mt-4 pt-3 border-t-2 border-black text-center">
+        <button onclick="clearCareerStats()" class="text-[10px] text-red-600 underline font-bold uppercase hover:text-black">
+          CLEAR CAREER HISTORY
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT GAME ENGINE: SOUND, LOGIC, PHASER 3, SHOP, MODIFIERS, STORAGE   -->
+  <!-- ========================================================================= -->
+  <script>
+    /* =========================================================================
+       1. WEB AUDIO SYNTHESIZER (ZERO EXTERNAL ASSETS NEEDED)
+       ========================================================================= */
+    class CabinetAudioEngine {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+        const saved = localStorage.getItem('cabinet_audio_enabled');
+        if (saved !== null) {
+          this.enabled = saved === 'true';
+        }
+        this.updateUI();
+      }
+
+      initContext() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      toggle() {
+        this.enabled = !this.enabled;
+        localStorage.setItem('cabinet_audio_enabled', this.enabled);
+        this.updateUI();
+        if (this.enabled) {
+          this.initContext();
+          this.playSelect();
+        }
+      }
+
+      updateUI() {
+        const icon = document.getElementById('sound-icon');
+        const text = document.getElementById('sound-text');
+        if (icon) icon.textContent = this.enabled ? '🔊' : '🔇';
+        if (text) text.textContent = this.enabled ? 'AUDIO ON' : 'MUTED';
+      }
+
+      playTone(freq, type = 'sine', duration = 0.08, gainVal = 0.15) {
+        if (!this.enabled) return;
+        this.initContext();
+        if (!this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {
+          console.warn('Audio play error:', e);
+        }
+      }
+
+      playSelect() {
+        this.playTone(880, 'sine', 0.04, 0.12);
+      }
+
+      playDeselect() {
+        this.playTone(520, 'sine', 0.04, 0.1);
+      }
+
+      playDeal() {
+        this.playTone(400, 'triangle', 0.05, 0.1);
+      }
+
+      playGavel() {
+        if (!this.enabled) return;
+        this.initContext();
+        if (!this.ctx) return;
+        // Heavy bass gavel strike + high snap
+        this.playTone(150, 'sawtooth', 0.18, 0.25);
+        setTimeout(() => this.playTone(90, 'sine', 0.25, 0.3), 30);
+      }
+
+      playChipCount(index = 0) {
+        // Ascending pentatonic pitch ladder
+        const baseFreq = 440;
+        const scale = [1, 1.125, 1.25, 1.333, 1.5, 1.666, 1.875, 2.0, 2.25, 2.5];
+        const multiplier = scale[index % scale.length] * Math.pow(1.5, Math.floor(index / scale.length));
+        this.playTone(baseFreq * multiplier, 'sine', 0.09, 0.18);
+      }
+
+      playMultTrigger() {
+        this.playTone(660, 'square', 0.12, 0.15);
+      }
+
+      playCabinetTrigger() {
+        this.playTone(1046.5, 'triangle', 0.15, 0.2);
+        setTimeout(() => this.playTone(1318.5, 'sine', 0.2, 0.2), 60);
+      }
+
+      playScoreBurst() {
+        this.playTone(220, 'sawtooth', 0.3, 0.25);
+        setTimeout(() => this.playTone(587, 'sine', 0.25, 0.25), 80);
+      }
+
+      playShopBuy() {
+        this.playTone(987.77, 'sine', 0.08, 0.2);
+        setTimeout(() => this.playTone(1318.5, 'sine', 0.25, 0.25), 70);
+      }
+
+      playWinFanfare() {
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+          setTimeout(() => this.playTone(freq, 'triangle', 0.25, 0.25), i * 110);
+        });
+      }
+
+      playGameOver() {
+        [440, 415.3, 392, 349.2].forEach((freq, i) => {
+          setTimeout(() => this.playTone(freq, 'sawtooth', 0.35, 0.2), i * 140);
+        });
+      }
+    }
+
+    const gameAudio = new CabinetAudioEngine();
+
+    /* =========================================================================
+       2. GAME CONSTANTS & FACTION DATA
+       ========================================================================= */
+    const FACTIONS = {
+      labor: {
+        id: 'labor',
+        name: 'LABOR',
+        colorHex: '#FCA5A5',
+        colorDark: '#EF4444',
+        phaserColor: 0xFCA5A5,
+        icon: '✊',
+        badgeClass: 'bg-coral text-black border-2 border-black'
+      },
+      industry: {
+        id: 'industry',
+        name: 'INDUSTRY',
+        colorHex: '#86EFAC',
+        colorDark: '#10B981',
+        phaserColor: 0x86EFAC,
+        icon: '🏭',
+        badgeClass: 'bg-mint text-black border-2 border-black'
+      },
+      military: {
+        id: 'military',
+        name: 'MILITARY',
+        colorHex: '#7DD3FC',
+        colorDark: '#0284C7',
+        phaserColor: 0x7DD3FC,
+        icon: '🎖️',
+        badgeClass: 'bg-skyBlue text-black border-2 border-black'
+      },
+      media: {
+        id: 'media',
+        name: 'MEDIA',
+        colorHex: '#FDE047',
+        colorDark: '#EAB308',
+        phaserColor: 0xFDE047,
+        icon: '📡',
+        badgeClass: 'bg-safetyYellow text-black border-2 border-black'
+      }
+    };
+
+    const RANKS = [
+      { rank: '2', val: 2, name: '2' },
+      { rank: '3', val: 3, name: '3' },
+      { rank: '4', val: 4, name: '4' },
+      { rank: '5', val: 5, name: '5' },
+      { rank: '6', val: 6, name: '6' },
+      { rank: '7', val: 7, name: '7' },
+      { rank: '8', val: 8, name: '8' },
+      { rank: '9', val: 9, name: '9' },
+      { rank: '10', val: 10, name: '10' },
+      { rank: 'J', val: 10, name: 'J', title: 'Lobbyist' },
+      { rank: 'Q', val: 10, name: 'Q', title: 'Senator' },
+      { rank: 'K', val: 10, name: 'K', title: 'Party Chair' },
+      { rank: 'A', val: 11, name: 'A', title: 'Presidential Decree' }
+    ];
+
+    const RANK_VALUES = {
+      '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10,
+      'J': 11, 'Q': 12, 'K': 13, 'A': 14
+    };
+
+    /* Term Crises Progression */
+    const TERM_CONFIGS = [
+      { term: 1, target: 300, name: 'INAUGURATION', crisis: 'Standard Legislative Session' },
+      { term: 2, target: 800, name: 'MIDTERM ELECTIONS', crisis: 'Public Dissatisfaction (High Target)' },
+      { term: 3, target: 2000, name: 'GENERAL STRIKE', crisis: 'Labor Unrest (High Multiplier Need)' },
+      { term: 4, target: 4500, name: 'MARKET CRASH', crisis: 'Fiscal Deficit Pressure' },
+      { term: 5, target: 9500, name: 'WAR POWERS ACT', crisis: 'Geopolitical Polarization' },
+      { term: 6, target: 19000, name: 'REGULATORY GRIDLOCK', crisis: 'Partisan Filibuster' },
+      { term: 7, target: 38000, name: 'DEEP STATE HEARINGS', crisis: 'Subpoena Delays' },
+      { term: 8, target: 75000, name: 'PRESIDENTIAL ELECTION', crisis: 'Historic Constitutional Mandate' },
+    ];
+
+    /* =========================================================================
+       3. CABINET MODIFIERS POOL (JOKERS)
+       ========================================================================= */
+    const ALL_CABINET_MEMBERS = [
+      {
+        id: 'media_mogul',
+        name: 'The Media Mogul',
+        icon: '📡',
+        cost: 5,
+        sellVal: 3,
+        rarity: 'Common',
+        desc: '+4 Mult for each played Media card.',
+        onScoreCard: (card, ctx) => {
+          if (card.faction === 'media') {
+            ctx.mult += 4;
+            ctx.logTrigger('Media Mogul: +4 Mult');
+          }
+        }
+      },
+      {
+        id: 'union_boss',
+        name: 'Union Boss',
+        icon: '✊',
+        cost: 6,
+        sellVal: 3,
+        rarity: 'Uncommon',
+        desc: '+30 Capital if played hand contains a Labor pair.',
+        onScoreHand: (handResult, playedCards, ctx) => {
+          const laborCards = playedCards.filter(c => c.faction === 'labor');
+          const ranks = {};
+          laborCards.forEach(c => ranks[c.rank] = (ranks[c.rank] || 0) + 1);
+          if (Object.values(ranks).some(count => count >= 2)) {
+            ctx.capital += 30;
+            ctx.logTrigger('Union Boss: +30 Capital');
+          }
+        }
+      },
+      {
+        id: 'defense_contractor',
+        name: 'Defense Contractor',
+        icon: '🎖️',
+        cost: 6,
+        sellVal: 3,
+        rarity: 'Uncommon',
+        desc: '+15 Capital for each Military card remaining in hand.',
+        onScoreHand: (handResult, playedCards, ctx) => {
+          const heldMilitary = ctx.heldCards.filter(c => c.faction === 'military').length;
+          if (heldMilitary > 0) {
+            ctx.capital += heldMilitary * 15;
+            ctx.logTrigger(`Defense Contractor: +${heldMilitary * 15} Capital`);
+          }
+        }
+      },
+      {
+        id: 'oligarch',
+        name: 'The Oligarch',
+        icon: '🏭',
+        cost: 7,
+        sellVal: 4,
+        rarity: 'Rare',
+        desc: '+3 Mult for every played Industry card.',
+        onScoreCard: (card, ctx) => {
+          if (card.faction === 'industry') {
+            ctx.mult += 3;
+            ctx.logTrigger('The Oligarch: +3 Mult');
+          }
+        }
+      },
+      {
+        id: 'press_secretary',
+        name: 'Press Secretary',
+        icon: '🎙️',
+        cost: 5,
+        sellVal: 3,
+        rarity: 'Common',
+        desc: '+8 Mult if hand contains at least one Media card.',
+        onScoreHand: (handResult, playedCards, ctx) => {
+          if (playedCards.some(c => c.faction === 'media')) {
+            ctx.mult += 8;
+            ctx.logTrigger('Press Secretary: +8 Mult');
+          }
+        }
+      },
+      {
+        id: 'chief_of_staff',
+        name: 'Chief of Staff',
+        icon: '👔',
+        cost: 8,
+        sellVal: 4,
+        rarity: 'Rare',
+        desc: 'Retriggers your highest rank card.',
+        onScoreHand: (handResult, playedCards, ctx) => {
+          if (playedCards.length > 0) {
+            const sorted = [...playedCards].sort((a, b) => RANK_VALUES[b.rank] - RANK_VALUES[a.rank]);
+            const topCard = sorted[0];
+            ctx.capital += topCard.val;
+            ctx.logTrigger(`Chief of Staff: Retriggered ${topCard.rank} (+${topCard.val} Cap)`);
+          }
+        }
+      },
+      {
+        id: 'central_banker',
+        name: 'Central Banker',
+        icon: '🏛️',
+        cost: 7,
+        sellVal: 4,
+        rarity: 'Uncommon',
+        desc: '+$3 Federal Treasury at term end; +12 Capital on all hands.',
+        onScoreHand: (handResult, playedCards, ctx) => {
+          ctx.capital += 12;
+          ctx.logTrigger('Central Banker: +12 Capital');
+        },
+        onTermEnd: (ctx) => {
+          ctx.treasury += 3;
+        }
+      },
+      {
+        id: 'spin_doctor',
+        name: 'Spin Doctor',
+        icon: '🌀',
+        cost: 5,
+        sellVal: 3,
+        rarity: 'Common',
+        desc: '+15 Capital buffer whenever you use a Discard.',
+        onDiscard: (ctx) => {
+          ctx.mandate += 15;
+          gameUI.updateHUD();
+          gameUI.showFloatingNotice('+15 MANDATE (SPIN DOCTOR)', '#86EFAC');
+        }
+      },
+      {
+        id: 'shadow_lobbyist',
+        name: 'Shadow Lobbyist',
+        icon: '💼',
+        cost: 6,
+        sellVal: 3,
+        rarity: 'Uncommon',
+        desc: '+1 Mult for every $4 in your Federal Treasury.',
+        onScoreHand: (handResult, playedCards, ctx) => {
+          const bonusMult = Math.floor(ctx.treasury / 4);
+          if (bonusMult > 0) {
+            ctx.mult += bonusMult;
+            ctx.logTrigger(`Shadow Lobbyist: +${bonusMult} Mult`);
+          }
+        }
+      },
+      {
+        id: 'drill_sergeant',
+        name: 'Drill Sergeant',
+        icon: '🪖',
+        cost: 6,
+        sellVal: 3,
+        rarity: 'Uncommon',
+        desc: '+35 Capital if hand is Supermajority or higher.',
+        onScoreHand: (handResult, playedCards, ctx) => {
+          const highHands = ['Supermajority', '5-Year Plan', 'Monolithic Bloc', 'Grand Coalition', 'Totalitarian Majority', '5-Year Monolith', 'Constitutional Consensus'];
+          if (highHands.includes(handResult.type)) {
+            ctx.capital += 35;
+            ctx.logTrigger('Drill Sergeant: +35 Capital');
+          }
+        }
+      },
+      {
+        id: 'whistleblower',
+        name: 'Whistleblower',
+        icon: '📢',
+        cost: 8,
+        sellVal: 4,
+        rarity: 'Rare',
+        desc: '1 in 3 chance for massive x3 Multiplier!',
+        onScoreHand: (handResult, playedCards, ctx) => {
+          if (Math.random() < 0.34) {
+            ctx.mult = Math.round(ctx.mult * 3);
+            ctx.logTrigger('Whistleblower LEAK: x3 Mult TRIGGERED!');
+          }
+        }
+      },
+      {
+        id: 'foreign_envoy',
+        name: 'Foreign Envoy',
+        icon: '🌐',
+        cost: 6,
+        sellVal: 3,
+        rarity: 'Common',
+        desc: '+8 Capital for all non-Labor cards played.',
+        onScoreCard: (card, ctx) => {
+          if (card.faction !== 'labor') {
+            ctx.capital += 8;
+            ctx.logTrigger('Foreign Envoy: +8 Cap');
+          }
+        }
+      },
+      {
+        id: 'populist_orator',
+        name: 'Populist Orator',
+        icon: '📣',
+        cost: 6,
+        sellVal: 3,
+        rarity: 'Uncommon',
+        desc: '+2 Mult for each card held in hand after playing.',
+        onScoreHand: (handResult, playedCards, ctx) => {
+          const heldCount = ctx.heldCards.length;
+          if (heldCount > 0) {
+            ctx.mult += heldCount * 2;
+            ctx.logTrigger(`Populist Orator: +${heldCount * 2} Mult`);
+          }
+        }
+      },
+      {
+        id: 'supreme_court_justice',
+        name: 'Supreme Court Justice',
+        icon: '⚖️',
+        cost: 7,
+        sellVal: 4,
+        rarity: 'Rare',
+        desc: 'x2 Multiplier if you play exactly 1 or 2 cards (Fiat).',
+        onScoreHand: (handResult, playedCards, ctx) => {
+          if (playedCards.length <= 2) {
+            ctx.mult = Math.round(ctx.mult * 2);
+            ctx.logTrigger('Supreme Court: x2 Executive Mult');
+          }
+        }
+      },
+      {
+        id: 'filibuster_veteran',
+        name: 'Filibuster Veteran',
+        icon: '⏳',
+        cost: 8,
+        sellVal: 4,
+        rarity: 'Rare',
+        desc: '+1 Extra Hand per term; +20 Capital on final hand.',
+        onTermStart: (ctx) => {
+          ctx.maxHands += 1;
+          ctx.handsRemaining += 1;
+        },
+        onScoreHand: (handResult, playedCards, ctx) => {
+          if (ctx.handsRemaining === 1) {
+            ctx.capital += 20;
+            ctx.logTrigger('Filibuster Veteran: +20 Cap on Final Hand');
+          }
+        }
+      },
+      {
+        id: 'silicon_valley_pac',
+        name: 'Silicon Valley PAC',
+        icon: '💻',
+        cost: 6,
+        sellVal: 3,
+        rarity: 'Uncommon',
+        desc: '+20 Capital for every Face Card (J, Q, K) scored.',
+        onScoreCard: (card, ctx) => {
+          if (['J', 'Q', 'K'].includes(card.rank)) {
+            ctx.capital += 20;
+            ctx.logTrigger('Silicon Valley PAC: +20 Capital');
+          }
+        }
+      }
+    ];
+
+    /* =========================================================================
+       4. SHOP VOUCHERS POOL
+       ========================================================================= */
+    const ALL_VOUCHERS = [
+      {
+        id: 'stimulus_bill',
+        name: 'Treasury Stimulus',
+        icon: '💵',
+        cost: 5,
+        desc: 'Receive +$10 instant Federal Budget.',
+        apply: (state) => {
+          state.treasury += 10;
+        }
+      },
+      {
+        id: 'executive_privilege',
+        name: 'Executive Privilege',
+        icon: '✍️',
+        cost: 8,
+        desc: '+1 Permanent Discard per Legislative Session.',
+        apply: (state) => {
+          state.baseDiscards += 1;
+          state.discardsRemaining += 1;
+        }
+      },
+      {
+        id: 'legislative_expansion',
+        name: 'Congressional Seat',
+        icon: '🏛️',
+        cost: 10,
+        desc: '+1 Permanent Hand per Legislative Session.',
+        apply: (state) => {
+          state.baseHands += 1;
+          state.handsRemaining += 1;
+        }
+      },
+      {
+        id: 'constitutional_amendment',
+        name: '28th Amendment',
+        icon: '📜',
+        cost: 12,
+        desc: 'Unlocks a 4th Cabinet Minister seat!',
+        apply: (state) => {
+          state.maxCabinetSlots = 4;
+          document.getElementById('cabinet-slot-3').classList.remove('hidden');
+        }
+      },
+      {
+        id: 'grassroots_canvassing',
+        name: 'Grassroots Canvass',
+        icon: '🗳️',
+        cost: 6,
+        desc: 'Permanently upgrades Coalition (Pair) by +10 Cap & +1 Mult.',
+        apply: (state) => {
+          state.handUpgrades['Coalition'] = state.handUpgrades['Coalition'] || { cap: 0, mult: 0 };
+          state.handUpgrades['Coalition'].cap += 10;
+          state.handUpgrades['Coalition'].mult += 1;
+        }
+      }
+    ];
+
+    /* =========================================================================
+       5. GAME STATE MODEL & LOCALSTORAGE PERSISTENCE
+       ========================================================================= */
+    class CabinetGameState {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.term = 1;
+        this.mandate = 0;
+        this.targetMandate = 300;
+        this.treasury = 8;
+        this.baseHands = 3;
+        this.baseDiscards = 3;
+        this.handsRemaining = 3;
+        this.discardsRemaining = 3;
+        this.maxCabinetSlots = 3;
+        this.cabinet = [
+          { ...ALL_CABINET_MEMBERS[0] } // Start with Media Mogul
+        ];
+        this.deck = this.createFullDeck();
+        this.playerHand = [];
+        this.selectedCardIds = [];
+        this.handUpgrades = {};
+        this.totalBillsPassed = 0;
+        this.bestHandScore = 0;
+        this.isScoring = false;
+        this.isShopOpen = false;
+        this.endlessMode = false;
+      }
+
+      createFullDeck() {
+        const deck = [];
+        let idCounter = 1;
+        Object.keys(FACTIONS).forEach(factionKey => {
+          RANKS.forEach(rankObj => {
+            deck.push({
+              id: `card_${idCounter++}`,
+              faction: factionKey,
+              rank: rankObj.rank,
+              val: rankObj.val,
+              title: rankObj.title || '',
+              enhancement: 'standard'
+            });
+          });
+        });
+        return this.shuffle(deck);
+      }
+
+      shuffle(array) {
+        const arr = [...array];
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      save() {
+        try {
+          const data = {
+            term: this.term,
+            mandate: this.mandate,
+            targetMandate: this.targetMandate,
+            treasury: this.treasury,
+            baseHands: this.baseHands,
+            baseDiscards: this.baseDiscards,
+            handsRemaining: this.handsRemaining,
+            discardsRemaining: this.discardsRemaining,
+            maxCabinetSlots: this.maxCabinetSlots,
+            cabinetIds: this.cabinet.map(c => c.id),
+            deck: this.deck,
+            playerHand: this.playerHand,
+            handUpgrades: this.handUpgrades,
+            totalBillsPassed: this.totalBillsPassed,
+            bestHandScore: this.bestHandScore,
+            endlessMode: this.endlessMode
+          };
+          localStorage.setItem('cabinet_run_state', JSON.stringify(data));
+        } catch (e) {
+          console.warn('LocalStorage save error:', e);
+        }
+      }
+
+      load() {
+        try {
+          const raw = localStorage.getItem('cabinet_run_state');
+          if (!raw) return false;
+          const data = JSON.parse(raw);
+          this.term = data.term || 1;
+          this.mandate = data.mandate || 0;
+          this.targetMandate = data.targetMandate || 300;
+          this.treasury = data.treasury !== undefined ? data.treasury : 8;
+          this.baseHands = data.baseHands || 3;
+          this.baseDiscards = data.baseDiscards || 3;
+          this.handsRemaining = data.handsRemaining || 3;
+          this.discardsRemaining = data.discardsRemaining || 3;
+          this.maxCabinetSlots = data.maxCabinetSlots || 3;
+          this.cabinet = (data.cabinetIds || []).map(id => {
+            const found = ALL_CABINET_MEMBERS.find(m => m.id === id);
+            return found ? { ...found } : null;
+          }).filter(Boolean);
+          this.deck = data.deck || this.createFullDeck();
+          this.playerHand = data.playerHand || [];
+          this.handUpgrades = data.handUpgrades || {};
+          this.totalBillsPassed = data.totalBillsPassed || 0;
+          this.bestHandScore = data.bestHandScore || 0;
+          this.endlessMode = data.endlessMode || false;
+          return true;
+        } catch (e) {
+          console.warn('LocalStorage load error:', e);
+          return false;
+        }
+      }
+
+      clearSavedState() {
+        localStorage.removeItem('cabinet_run_state');
+      }
+    }
+
+    const gameState = new CabinetGameState();
+
+    /* Career Statistics Tracker */
+    class CareerStatsTracker {
+      getStats() {
+        const defaultStats = { maxTerm: 1, bestHand: 0, totalBills: 0, wins: 0, membersHired: 0 };
+        try {
+          const saved = localStorage.getItem('cabinet_career_stats');
+          return saved ? { ...defaultStats, ...JSON.parse(saved) } : defaultStats;
+        } catch (e) {
+          return defaultStats;
+        }
+      }
+
+      recordHand(score) {
+        const stats = this.getStats();
+        stats.totalBills += 1;
+        if (score > stats.bestHand) stats.bestHand = score;
+        localStorage.setItem('cabinet_career_stats', JSON.stringify(stats));
+      }
+
+      recordTerm(term) {
+        const stats = this.getStats();
+        if (term > stats.maxTerm) stats.maxTerm = term;
+        localStorage.setItem('cabinet_career_stats', JSON.stringify(stats));
+      }
+
+      recordHire() {
+        const stats = this.getStats();
+        stats.membersHired += 1;
+        localStorage.setItem('cabinet_career_stats', JSON.stringify(stats));
+      }
+
+      recordWin() {
+        const stats = this.getStats();
+        stats.wins += 1;
+        localStorage.setItem('cabinet_career_stats', JSON.stringify(stats));
+      }
+    }
+
+    const careerStats = new CareerStatsTracker();
+
+    /* =========================================================================
+       6. HAND EVALUATION LOGIC (POKER EQUIVALENTS)
+       ========================================================================= */
+    const BASE_HANDS = {
+      'Constitutional Consensus': { name: 'CONSTITUTIONAL CONSENSUS', capital: 120, mult: 12 },
+      '5-Year Monolith': { name: '5-YEAR MONOLITH', capital: 100, mult: 8 },
+      'Totalitarian Majority': { name: 'TOTALITARIAN MAJORITY', capital: 60, mult: 5 },
+      'Grand Coalition': { name: 'GRAND COALITION', capital: 40, mult: 4 },
+      'Monolithic Bloc': { name: 'MONOLITHIC BLOC', capital: 35, mult: 4 },
+      '5-Year Plan': { name: '5-YEAR PLAN', capital: 30, mult: 4 },
+      'Supermajority': { name: 'SUPERMAJORITY', capital: 30, mult: 3 },
+      'Bipartisan Coalition': { name: 'BIPARTISAN COALITION', capital: 20, mult: 2 },
+      'Coalition': { name: 'COALITION', capital: 10, mult: 2 },
+      'Executive Fiat': { name: 'EXECUTIVE FIAT', capital: 5, mult: 1 }
+    };
+
+    function evaluatePokerHand(cards) {
+      if (!cards || cards.length === 0) {
+        return { type: 'None', name: 'NO CARDS SELECTED', baseCapital: 0, baseMult: 0, scoringCards: [] };
+      }
+
+      // Card counts and sorting
+      const rankCounts = {};
+      const factionCounts = {};
+      cards.forEach(c => {
+        rankCounts[c.rank] = (rankCounts[c.rank] || 0) + 1;
+        factionCounts[c.faction] = (factionCounts[c.faction] || 0) + 1;
+      });
+
+      const countValues = Object.values(rankCounts).sort((a, b) => b - a);
+      const isFlush = Object.values(factionCounts).some(c => c >= 5);
+
+      // Check Straight (5-Year Plan)
+      const rankInts = Array.from(new Set(cards.map(c => RANK_VALUES[c.rank]))).sort((a, b) => a - b);
+      let isStraight = false;
+      let straightHigh = 0;
+
+      // Allow Gerrymanderer gap if cabinet has it
+      const hasGerrymanderer = gameState.cabinet.some(m => m.id === 'gerrymanderer');
+      const reqSequential = hasGerrymanderer ? 4 : 5;
+
+      if (rankInts.length >= reqSequential) {
+        for (let i = 0; i <= rankInts.length - reqSequential; i++) {
+          let seq = 1;
+          for (let j = i; j < i + reqSequential - 1; j++) {
+            const diff = rankInts[j + 1] - rankInts[j];
+            if (diff === 1 || (hasGerrymanderer && diff === 2)) {
+              seq++;
+            }
+          }
+          if (seq >= reqSequential) {
+            isStraight = true;
+            straightHigh = rankInts[i + reqSequential - 1];
+            break;
+          }
+        }
+        // Low Ace Straight (A, 2, 3, 4, 5) -> [14, 2, 3, 4, 5]
+        if (!isStraight && rankInts.includes(14) && rankInts.includes(2) && rankInts.includes(3) && rankInts.includes(4) && rankInts.includes(5)) {
+          isStraight = true;
+          straightHigh = 5;
+        }
+      }
+
+      let type = 'Executive Fiat';
+
+      if (countValues[0] >= 5) {
+        type = 'Constitutional Consensus';
+      } else if (isStraight && isFlush) {
+        type = '5-Year Monolith';
+      } else if (countValues[0] >= 4) {
+        type = 'Totalitarian Majority';
+      } else if (countValues[0] === 3 && countValues[1] >= 2) {
+        type = 'Grand Coalition';
+      } else if (isFlush) {
+        type = 'Monolithic Bloc';
+      } else if (isStraight) {
+        type = '5-Year Plan';
+      } else if (countValues[0] === 3) {
+        type = 'Supermajority';
+      } else if (countValues[0] === 2 && countValues[1] === 2) {
+        type = 'Bipartisan Coalition';
+      } else if (countValues[0] === 2) {
+        type = 'Coalition';
+      } else {
+        type = 'Executive Fiat';
+      }
+
+      const baseInfo = BASE_HANDS[type] || BASE_HANDS['Executive Fiat'];
+      const upgrades = gameState.handUpgrades[type] || { cap: 0, mult: 0 };
+
+      return {
+        type: type,
+        name: baseInfo.name,
+        baseCapital: baseInfo.capital + upgrades.cap,
+        baseMult: baseInfo.mult + upgrades.mult,
+        scoringCards: cards
+      };
+    }
+
+    /* =========================================================================
+       7. PHASER 3 GAME SCENE: PROCEDURAL CARDS & ANIMATIONS
+       ========================================================================= */
+    let phaserGame = null;
+    let phaserScene = null;
+
+    class CabinetPhaserScene extends Phaser.Scene {
+      constructor() {
+        super({ key: 'CabinetPhaserScene' });
+        this.cardObjects = [];
+      }
+
+      create() {
+        phaserScene = this;
+        this.cameras.main.setBackgroundColor('#ECE8DE');
+
+        // Draw Legislative Chamber Table Felt Texture
+        this.drawTableBackground();
+
+        // Listen for window resize
+        this.scale.on('resize', this.handleResize, this);
+
+        // Initial render of hand cards
+        this.renderPlayerHand();
+      }
+
+      drawTableBackground() {
+        const { width, height } = this.scale;
+        if (this.bgGraphics) this.bgGraphics.destroy();
+        this.bgGraphics = this.add.graphics();
+
+        // Manila / Felt Table Texture with Geometric Balance Guide Grid
+        this.bgGraphics.fillStyle(0xECE8DE, 1);
+        this.bgGraphics.fillRect(0, 0, width, height);
+
+        // Legislative Chamber Center Circle
+        this.bgGraphics.lineStyle(2, 0x121316, 0.12);
+        this.bgGraphics.strokeCircle(width / 2, height * 0.32, Math.min(width, height) * 0.22);
+        this.bgGraphics.strokeCircle(width / 2, height * 0.32, Math.min(width, height) * 0.25);
+
+        // Dashed Hand Rail Guideline
+        this.bgGraphics.lineStyle(2.5, 0x121316, 0.2);
+        this.bgGraphics.lineBetween(20, height * 0.62, width - 20, height * 0.62);
+
+        // Watermark Seal Text in center
+        if (this.sealText) this.sealText.destroy();
+        this.sealText = this.add.text(width / 2, height * 0.32, 'CONGRESSIONAL FLOOR', {
+          fontFamily: '"Space Mono", "JetBrains Mono", monospace',
+          fontSize: '14px',
+          fontWeight: '900',
+          color: '#121316',
+          align: 'center'
+        }).setOrigin(0.5).setAlpha(0.14);
+      }
+
+      handleResize(gameSize) {
+        this.drawTableBackground();
+        this.renderPlayerHand();
+      }
+
+      renderPlayerHand() {
+        // Destroy existing Phaser card containers
+        this.cardObjects.forEach(obj => {
+          if (obj.container) obj.container.destroy();
+        });
+        this.cardObjects = [];
+
+        const hand = gameState.playerHand;
+        const totalCards = hand.length;
+        if (totalCards === 0) return;
+
+        const { width, height } = this.scale;
+        const cardWidth = Math.min(84, Math.floor((width - 40) / Math.max(8, totalCards)));
+        const cardHeight = Math.floor(cardWidth * 1.42);
+        const startX = (width - (totalCards * cardWidth + (totalCards - 1) * 8)) / 2 + cardWidth / 2;
+        const handY = height * 0.78;
+
+        hand.forEach((cardData, idx) => {
+          const targetX = startX + idx * (cardWidth + 8);
+          const isSelected = gameState.selectedCardIds.includes(cardData.id);
+          const targetY = isSelected ? handY - 28 : handY;
+
+          const cardContainer = this.createProceduralCard(cardData, cardWidth, cardHeight, isSelected);
+          cardContainer.setPosition(targetX, targetY);
+
+          // Interactive setup
+          cardContainer.setSize(cardWidth, cardHeight);
+          cardContainer.setInteractive({ useHandCursor: true });
+
+          cardContainer.on('pointerdown', () => {
+            if (gameState.isScoring) return;
+            gameController.toggleCardSelection(cardData.id);
+          });
+
+          cardContainer.on('pointerover', () => {
+            if (gameState.isScoring) return;
+            this.tweens.add({
+              targets: cardContainer,
+              scale: 1.05,
+              duration: 100,
+              ease: 'Quad.easeOut'
+            });
+          });
+
+          cardContainer.on('pointerout', () => {
+            this.tweens.add({
+              targets: cardContainer,
+              scale: 1.0,
+              duration: 100,
+              ease: 'Quad.easeOut'
+            });
+          });
+
+          this.cardObjects.push({
+            id: cardData.id,
+            container: cardContainer,
+            data: cardData,
+            origX: targetX,
+            origY: handY,
+            width: cardWidth,
+            height: cardHeight
+          });
+        });
+      }
+
+      createProceduralCard(cardData, w, h, isSelected) {
+        const container = this.add.container(0, 0);
+        const faction = FACTIONS[cardData.faction] || FACTIONS.labor;
+
+        // 1. Geometric Offset Shadow
+        const shadow = this.add.rectangle(3, 3, w, h, 0x121316, 1)
+          .setOrigin(0.5);
+        container.add(shadow);
+
+        // 2. Card Background Frame
+        const cardBg = this.add.rectangle(0, 0, w, h, 0xFFFDF5, 1)
+          .setStrokeStyle(2.5, 0x121316)
+          .setOrigin(0.5);
+        container.add(cardBg);
+
+        // 3. Faction Banner Top Header
+        const headerH = Math.floor(h * 0.28);
+        const factionHeader = this.add.rectangle(0, -h / 2 + headerH / 2, w, headerH, faction.phaserColor, 1)
+          .setStrokeStyle(2, 0x121316)
+          .setOrigin(0.5);
+        container.add(factionHeader);
+
+        // 4. Rank & Faction Icon Top-Left
+        const rankText = this.add.text(-w / 2 + 6, -h / 2 + 4, cardData.rank, {
+          fontFamily: '"Space Mono", "JetBrains Mono", monospace',
+          fontSize: `${Math.max(12, Math.floor(w * 0.24))}px`,
+          fontWeight: '900',
+          color: '#121316'
+        }).setOrigin(0, 0);
+        container.add(rankText);
+
+        const iconTop = this.add.text(w / 2 - 6, -h / 2 + 4, faction.icon, {
+          fontSize: `${Math.max(11, Math.floor(w * 0.2))}px`
+        }).setOrigin(1, 0);
+        container.add(iconTop);
+
+        // 5. Center Watermark & Rank Emblem
+        const centerIcon = this.add.text(0, h * 0.08, faction.icon, {
+          fontSize: `${Math.max(22, Math.floor(w * 0.42))}px`
+        }).setOrigin(0.5);
+        container.add(centerIcon);
+
+        // 6. Base Capital Point Chip Bottom Banner
+        const chipBg = this.add.rectangle(0, h / 2 - 12, w - 8, 18, 0x121316, 1)
+          .setOrigin(0.5);
+        container.add(chipBg);
+
+        const chipText = this.add.text(0, h / 2 - 12, `+${cardData.val} CAP`, {
+          fontFamily: '"Space Mono", "JetBrains Mono", monospace',
+          fontSize: `${Math.max(8, Math.floor(w * 0.13))}px`,
+          fontWeight: '900',
+          color: '#86EFAC'
+        }).setOrigin(0.5);
+        container.add(chipText);
+
+        // 7. Selected Indicator Ring / Badge
+        if (isSelected) {
+          const selectHighlight = this.add.graphics();
+          selectHighlight.lineStyle(3, 0xFDE047, 1);
+          selectHighlight.strokeRect(-w / 2 - 2, -h / 2 - 2, w + 4, h + 4);
+          container.add(selectHighlight);
+        }
+
+        return container;
+      }
+
+      /* Balatro-Style Scoring Animation Sequence */
+      animateScoringSequence(playedCardIds, evaluation, onComplete) {
+        const { width, height } = this.scale;
+        const playedObjects = this.cardObjects.filter(obj => playedCardIds.includes(obj.id));
+
+        // Animate selected cards into center chamber
+        const centerCount = playedObjects.length;
+        const cardW = playedObjects[0] ? playedObjects[0].width : 76;
+        const startX = (width - (centerCount * cardW + (centerCount - 1) * 12)) / 2 + cardW / 2;
+        const centerY = height * 0.36;
+
+        let delay = 0;
+        playedObjects.forEach((cardObj, idx) => {
+          this.tweens.add({
+            targets: cardObj.container,
+            x: startX + idx * (cardW + 12),
+            y: centerY,
+            scale: 1.12,
+            duration: 250,
+            ease: 'Back.easeOut',
+            delay: delay
+          });
+          delay += 60;
+        });
+
+        // Sequence: Light up each card, count chips, trigger cabinet, then slam multiplier
+        this.time.delayedCall(delay + 200, () => {
+          let runningCapital = evaluation.baseCapital;
+          let runningMult = evaluation.baseMult;
+
+          // Sequential card scoring
+          playedObjects.forEach((cardObj, cIdx) => {
+            this.time.delayedCall(cIdx * 240, () => {
+              // Sound ping
+              gameAudio.playChipCount(cIdx);
+
+              // Pulse card
+              this.tweens.add({
+                targets: cardObj.container,
+                scale: 1.25,
+                y: centerY - 16,
+                yoyo: true,
+                duration: 120,
+                ease: 'Quad.easeOut'
+              });
+
+              // Add card capital
+              runningCapital += cardObj.data.val;
+              gameUI.updateEvaluatorLive(runningCapital, runningMult);
+
+              // Floating popup over card
+              this.spawnFloatingScore(`+${cardObj.data.val} CAP`, cardObj.container.x, centerY - 45, '#86EFAC');
+            });
+          });
+
+          // Cabinet Modifiers Trigger Sequence
+          const cabinetDelay = playedObjects.length * 240 + 150;
+          this.time.delayedCall(cabinetDelay, () => {
+            const scoringContext = {
+              capital: runningCapital,
+              mult: runningMult,
+              heldCards: gameState.playerHand.filter(c => !playedCardIds.includes(c.id)),
+              treasury: gameState.treasury,
+              handsRemaining: gameState.handsRemaining,
+              logTrigger: (msg) => {
+                gameUI.showFloatingNotice(msg, '#FDE047');
+              }
+            };
+
+            // Run per-card modifiers
+            playedObjects.forEach(cardObj => {
+              gameState.cabinet.forEach(member => {
+                if (member.onScoreCard) {
+                  member.onScoreCard(cardObj.data, scoringContext);
+                }
+              });
+            });
+
+            // Run per-hand modifiers
+            gameState.cabinet.forEach(member => {
+              if (member.onScoreHand) {
+                member.onScoreHand(evaluation, playedObjects.map(o => o.data), scoringContext);
+              }
+            });
+
+            runningCapital = scoringContext.capital;
+            runningMult = scoringContext.mult;
+
+            gameAudio.playCabinetTrigger();
+            gameUI.updateEvaluatorLive(runningCapital, runningMult);
+            gameUI.flashCabinetSlots();
+
+            // Final Calculation Slam!
+            this.time.delayedCall(450, () => {
+              const totalMandateGained = runningCapital * runningMult;
+              gameAudio.playGavel();
+
+              // Screen Shake Effect
+              this.cameras.main.shake(300, 0.015);
+              document.body.classList.add('shake-screen');
+              setTimeout(() => document.body.classList.remove('shake-screen'), 350);
+
+              // Final Floating Splash
+              this.spawnFloatingScore(`+${totalMandateGained} MANDATE!`, width / 2, centerY - 70, '#FDE047', '24px');
+
+              // Tally into game state
+              gameState.mandate += totalMandateGained;
+              gameState.totalBillsPassed += 1;
+              if (totalMandateGained > gameState.bestHandScore) {
+                gameState.bestHandScore = totalMandateGained;
+              }
+              careerStats.recordHand(totalMandateGained);
+
+              gameUI.updateHUD();
+
+              // Slide cards away offscreen
+              this.time.delayedCall(700, () => {
+                playedObjects.forEach((obj, idx) => {
+                  this.tweens.add({
+                    targets: obj.container,
+                    y: -150,
+                    alpha: 0,
+                    duration: 300,
+                    delay: idx * 40,
+                    ease: 'Quad.easeIn',
+                    onComplete: () => {
+                      if (idx === playedObjects.length - 1) {
+                        if (onComplete) onComplete(totalMandateGained);
+                      }
+                    }
+                  });
+                });
+              });
+            });
+          });
+        });
+      }
+
+      spawnFloatingScore(text, x, y, color = '#FDE047', size = '16px') {
+        const floatText = this.add.text(x, y, text, {
+          fontFamily: '"Space Mono", "JetBrains Mono", monospace',
+          fontSize: size,
+          fontWeight: '900',
+          color: '#121316',
+          backgroundColor: color,
+          padding: { x: 6, y: 3 }
+        }).setOrigin(0.5).setStroke('#121316', 3);
+
+        this.tweens.add({
+          targets: floatText,
+          y: y - 35,
+          alpha: 0,
+          duration: 900,
+          ease: 'Quad.easeOut',
+          onComplete: () => floatText.destroy()
+        });
+      }
+    }
+
+    /* Init Phaser Instance */
+    function initPhaser() {
+      const container = document.getElementById('phaser-game-container');
+      const width = Math.min(container.clientWidth || 800, 960);
+      const height = 330;
+
+      const config = {
+        type: Phaser.AUTO,
+        parent: 'phaser-game-container',
+        width: width,
+        height: height,
+        backgroundColor: '#ECE8DE',
+        scene: [CabinetPhaserScene],
+        scale: {
+          mode: Phaser.Scale.FIT,
+          autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
+        }
+      };
+
+      phaserGame = new Phaser.Game(config);
+    }
+
+    /* =========================================================================
+       8. UI CONTROLLER & VIEW UPDATER
+       ========================================================================= */
+    const gameUI = {
+      updateHUD() {
+        const termConfig = TERM_CONFIGS[Math.min(gameState.term - 1, TERM_CONFIGS.length - 1)];
+        const target = gameState.targetMandate;
+
+        document.getElementById('hud-term-badge').textContent = `TERM ${gameState.term}`;
+        document.getElementById('hud-term-name').textContent = termConfig ? termConfig.name : `TERM ${gameState.term}`;
+        document.getElementById('hud-crisis-desc').textContent = termConfig ? termConfig.crisis : 'Endless Escalation';
+        document.getElementById('hud-term-target').textContent = target.toLocaleString();
+        document.getElementById('hud-target-mandate').textContent = target.toLocaleString();
+
+        document.getElementById('hud-current-mandate').textContent = gameState.mandate.toLocaleString();
+
+        const pct = Math.min(100, Math.floor((gameState.mandate / target) * 100));
+        document.getElementById('hud-mandate-pct').textContent = `${pct}%`;
+        document.getElementById('hud-mandate-bar').style.width = `${pct}%`;
+
+        document.getElementById('hud-hands-count').textContent = `${gameState.handsRemaining}/${gameState.baseHands}`;
+        document.getElementById('hud-discards-count').textContent = `${gameState.discardsRemaining}/${gameState.baseDiscards}`;
+
+        document.getElementById('hud-treasury-val').textContent = `$${gameState.treasury}`;
+        document.getElementById('header-deck-count').textContent = gameState.deck.length;
+
+        // Action button states
+        const selectedCount = gameState.selectedCardIds.length;
+        const btnPlay = document.getElementById('btn-play-hand');
+        const btnDiscard = document.getElementById('btn-discard');
+
+        btnPlay.disabled = selectedCount === 0 || selectedCount > 5 || gameState.handsRemaining <= 0 || gameState.isScoring;
+        btnDiscard.disabled = selectedCount === 0 || selectedCount > 5 || gameState.discardsRemaining <= 0 || gameState.isScoring;
+
+        this.renderCabinetSlots();
+        this.updateHandEvaluator();
+      },
+
+      updateHandEvaluator() {
+        const selectedCards = gameState.playerHand.filter(c => gameState.selectedCardIds.includes(c.id));
+        const evaluation = evaluatePokerHand(selectedCards);
+
+        const banner = document.getElementById('hand-eval-banner');
+        if (selectedCards.length > 0) {
+          banner.classList.remove('opacity-70');
+          document.getElementById('eval-hand-name').textContent = evaluation.name;
+          document.getElementById('eval-capital-val').textContent = evaluation.baseCapital;
+          document.getElementById('eval-mult-val').textContent = evaluation.baseMult;
+          document.getElementById('eval-total-val').textContent = (evaluation.baseCapital * evaluation.baseMult).toLocaleString();
+        } else {
+          banner.classList.add('opacity-70');
+          document.getElementById('eval-hand-name').textContent = 'SELECT UP TO 5 CARDS';
+          document.getElementById('eval-capital-val').textContent = '0';
+          document.getElementById('eval-mult-val').textContent = '0';
+          document.getElementById('eval-total-val').textContent = '0';
+        }
+      },
+
+      updateEvaluatorLive(capital, mult) {
+        document.getElementById('eval-capital-val').textContent = capital;
+        document.getElementById('eval-mult-val').textContent = mult;
+        document.getElementById('eval-total-val').textContent = (capital * mult).toLocaleString();
+      },
+
+      renderCabinetSlots() {
+        const countSpan = document.getElementById('cabinet-slot-count');
+        countSpan.textContent = `(${gameState.cabinet.length}/${gameState.maxCabinetSlots} SLOTS OCCUPIED)`;
+
+        for (let i = 0; i < 4; i++) {
+          const slot = document.getElementById(`cabinet-slot-${i}`);
+          if (!slot) continue;
+
+          if (i >= gameState.maxCabinetSlots) {
+            slot.className = 'border-3 border-dashed border-neutral-400 bg-neutral-100 p-2 min-h-[72px] flex items-center justify-center text-xs font-bold text-neutral-400 uppercase text-center rounded hidden';
+            continue;
+          }
+
+          const member = gameState.cabinet[i];
+          if (member) {
+            slot.className = 'card-brutal bg-manila p-2 min-h-[72px] flex flex-col justify-between rounded relative group';
+            slot.innerHTML = `
+              <div class="flex items-start justify-between gap-1">
+                <div class="flex items-center gap-1">
+                  <span class="text-lg">${member.icon}</span>
+                  <span class="text-xs font-black uppercase truncate">${member.name}</span>
+                </div>
+                <button onclick="gameController.sellCabinetMember(${i})" class="btn-brutal bg-coral text-[9px] px-1 py-0.5" title="Sell for $${member.sellVal || 2}">
+                  SELL $${member.sellVal || 2}
+                </button>
+              </div>
+              <div class="text-[10px] text-neutral-700 font-bold leading-tight mt-1">
+                ${member.desc}
+              </div>
+            `;
+          } else {
+            slot.className = 'border-3 border-dashed border-neutral-400 bg-neutral-100 p-2 min-h-[72px] flex items-center justify-center text-xs font-bold text-neutral-400 uppercase text-center rounded';
+            slot.innerHTML = `EMPTY CABINET SEAT`;
+          }
+        }
+      },
+
+      flashCabinetSlots() {
+        for (let i = 0; i < gameState.cabinet.length; i++) {
+          const slot = document.getElementById(`cabinet-slot-${i}`);
+          if (slot) {
+            slot.classList.add('pulse-cabinet');
+            setTimeout(() => slot.classList.remove('pulse-cabinet'), 450);
+          }
+        }
+      },
+
+      showFloatingNotice(text, color = '#FDE047') {
+        const toast = document.createElement('div');
+        toast.className = 'fixed top-20 left-1/2 -translate-x-1/2 z-50 border-3 border-black p-2 font-black text-xs uppercase shadow-brutal pointer-events-none transition-all duration-500';
+        toast.style.backgroundColor = color;
+        toast.textContent = text;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+          toast.style.transform = 'translate(-50%, -20px)';
+          toast.style.opacity = '0';
+          setTimeout(() => toast.remove(), 500);
+        }, 1200);
+      }
+    };
+
+    /* =========================================================================
+       9. GAME CONTROLLER: DEALS, PLAYS, DISCARDS & ROUND FLOW
+       ========================================================================= */
+    const gameController = {
+      startNewGame() {
+        gameState.reset();
+        careerStats.recordTerm(1);
+        closeAllModals();
+        this.dealNewHand();
+        gameUI.updateHUD();
+        gameState.save();
+      },
+
+      continueEndlessMode() {
+        gameState.endlessMode = true;
+        gameState.term += 1;
+        gameState.targetMandate = Math.floor(gameState.targetMandate * 2.2);
+        closeAllModals();
+        gameShop.openShop();
+      },
+
+      dealNewHand() {
+        // Draw cards until player has 8 cards in hand
+        const targetHandSize = 8;
+        const needed = targetHandSize - gameState.playerHand.length;
+
+        for (let i = 0; i < needed; i++) {
+          if (gameState.deck.length === 0) {
+            // Re-shuffle full deck if depleted
+            gameState.deck = gameState.createFullDeck();
+          }
+          const drawn = gameState.deck.pop();
+          if (drawn) {
+            gameState.playerHand.push(drawn);
+            gameAudio.playDeal();
+          }
+        }
+
+        gameState.selectedCardIds = [];
+        if (phaserScene) {
+          phaserScene.renderPlayerHand();
+        }
+      },
+
+      toggleCardSelection(cardId) {
+        if (gameState.isScoring) return;
+
+        const idx = gameState.selectedCardIds.indexOf(cardId);
+        if (idx >= 0) {
+          gameState.selectedCardIds.splice(idx, 1);
+          gameAudio.playDeselect();
+        } else {
+          if (gameState.selectedCardIds.length >= 5) {
+            gameUI.showFloatingNotice('MAXIMUM 5 CARDS PER BILL', '#FCA5A5');
+            return;
+          }
+          gameState.selectedCardIds.push(cardId);
+          gameAudio.playSelect();
+        }
+
+        if (phaserScene) {
+          phaserScene.renderPlayerHand();
+        }
+        gameUI.updateHUD();
+      },
+
+      playSelectedHand() {
+        if (gameState.isScoring || gameState.selectedCardIds.length === 0 || gameState.handsRemaining <= 0) return;
+
+        gameState.isScoring = true;
+        gameState.handsRemaining -= 1;
+        gameUI.updateHUD();
+
+        const playedCards = gameState.playerHand.filter(c => gameState.selectedCardIds.includes(c.id));
+        const evaluation = evaluatePokerHand(playedCards);
+
+        // Run Phaser scoring animation
+        phaserScene.animateScoringSequence(gameState.selectedCardIds, evaluation, (scoreEarned) => {
+          // Remove played cards from player hand
+          gameState.playerHand = gameState.playerHand.filter(c => !gameState.selectedCardIds.includes(c.id));
+          gameState.selectedCardIds = [];
+          gameState.isScoring = false;
+
+          // Check if Mandate Target reached!
+          if (gameState.mandate >= gameState.targetMandate) {
+            this.handleTermVictory();
+          } else if (gameState.handsRemaining <= 0) {
+            this.handleTermGameOver();
+          } else {
+            // Refill hand and continue term
+            this.dealNewHand();
+            gameUI.updateHUD();
+            gameState.save();
+          }
+        });
+      },
+
+      discardSelectedCards() {
+        if (gameState.isScoring || gameState.selectedCardIds.length === 0 || gameState.discardsRemaining <= 0) return;
+
+        gameState.discardsRemaining -= 1;
+        gameAudio.playGavel();
+
+        // Trigger Spin Doctor or other discard modifiers
+        gameState.cabinet.forEach(m => {
+          if (m.onDiscard) m.onDiscard(gameState);
+        });
+
+        // Discard cards and deal replacements
+        gameState.playerHand = gameState.playerHand.filter(c => !gameState.selectedCardIds.includes(c.id));
+        gameState.selectedCardIds = [];
+
+        this.dealNewHand();
+        gameUI.updateHUD();
+        gameState.save();
+      },
+
+      sortHand(type = 'faction') {
+        if (gameState.isScoring) return;
+        gameAudio.playSelect();
+
+        if (type === 'faction') {
+          gameState.playerHand.sort((a, b) => a.faction.localeCompare(b.faction) || RANK_VALUES[b.rank] - RANK_VALUES[a.rank]);
+        } else {
+          gameState.playerHand.sort((a, b) => RANK_VALUES[b.rank] - RANK_VALUES[a.rank]);
+        }
+
+        if (phaserScene) {
+          phaserScene.renderPlayerHand();
+        }
+      },
+
+      sellCabinetMember(index) {
+        const member = gameState.cabinet[index];
+        if (!member) return;
+
+        const payout = member.sellVal || 2;
+        gameState.treasury += payout;
+        gameState.cabinet.splice(index, 1);
+        gameAudio.playShopBuy();
+        gameUI.updateHUD();
+        gameUI.showFloatingNotice(`SOLD ${member.name} (+$${payout})`, '#86EFAC');
+        gameState.save();
+      },
+
+      handleTermVictory() {
+        gameAudio.playWinFanfare();
+
+        // Bonus Treasury for unused hands (+$1 per unused hand)
+        const bonus = gameState.handsRemaining;
+        gameState.treasury += bonus;
+
+        // Check Term end modifiers (Central Banker, etc.)
+        gameState.cabinet.forEach(m => {
+          if (m.onTermEnd) m.onTermEnd(gameState);
+        });
+
+        careerStats.recordTerm(gameState.term + 1);
+
+        if (gameState.term === 8 && !gameState.endlessMode) {
+          careerStats.recordWin();
+          this.showVictoryModal();
+        } else {
+          gameShop.openShop();
+        }
+      },
+
+      handleTermGameOver() {
+        gameAudio.playGameOver();
+        gameState.clearSavedState();
+
+        document.getElementById('gameover-terms').textContent = gameState.term;
+        document.getElementById('gameover-best-hand').textContent = gameState.bestHandScore.toLocaleString();
+        document.getElementById('gameover-total-bills').textContent = gameState.totalBillsPassed;
+        document.getElementById('gameover-treasury').textContent = `$${gameState.treasury}`;
+
+        document.getElementById('modal-gameover').classList.remove('hidden');
+      },
+
+      showVictoryModal() {
+        document.getElementById('victory-total-mandate').textContent = gameState.mandate.toLocaleString();
+        document.getElementById('victory-best-hand').textContent = gameState.bestHandScore.toLocaleString();
+        document.getElementById('modal-victory').classList.remove('hidden');
+      },
+
+      resetGameConfirm() {
+        if (confirm('Are you sure you want to restart your political campaign? Current progress will be reset.')) {
+          this.startNewGame();
+        }
+      }
+    };
+
+    /* =========================================================================
+       10. FEDERAL SHOP SYSTEM
+       ========================================================================= */
+    const gameShop = {
+      availableCabinet: [],
+      availableVouchers: [],
+      rerollCost: 3,
+
+      openShop() {
+        gameState.isShopOpen = true;
+        this.generateShopInventory();
+        this.renderShopUI();
+        document.getElementById('modal-shop').classList.remove('hidden');
+        gameState.save();
+      },
+
+      generateShopInventory() {
+        // Pick 3 random Cabinet members not already owned
+        const currentIds = gameState.cabinet.map(c => c.id);
+        const unowned = ALL_CABINET_MEMBERS.filter(c => !currentIds.includes(c.id));
+        const shuffledCabinet = [...unowned].sort(() => 0.5 - Math.random());
+        this.availableCabinet = shuffledCabinet.slice(0, 3);
+
+        // Pick 2-3 random vouchers
+        const shuffledVouchers = [...ALL_VOUCHERS].sort(() => 0.5 - Math.random());
+        this.availableVouchers = shuffledVouchers.slice(0, 3);
+      },
+
+      reroll() {
+        if (gameState.treasury < this.rerollCost) {
+          gameUI.showFloatingNotice('INSUFFICIENT TREASURY FUNDS', '#FCA5A5');
+          return;
+        }
+        gameState.treasury -= this.rerollCost;
+        this.rerollCost += 1;
+        gameAudio.playSelect();
+        this.generateShopInventory();
+        this.renderShopUI();
+        gameState.save();
+      },
+
+      renderShopUI() {
+        document.getElementById('shop-treasury-val').textContent = `$${gameState.treasury}`;
+        document.getElementById('shop-reroll-cost').textContent = this.rerollCost;
+        document.getElementById('shop-next-term-num').textContent = gameState.term + 1;
+
+        // Render Cabinet candidates
+        const cabinetGrid = document.getElementById('shop-cabinet-grid');
+        cabinetGrid.innerHTML = '';
+
+        this.availableCabinet.forEach((member, idx) => {
+          const canAfford = gameState.treasury >= member.cost;
+          const hasSpace = gameState.cabinet.length < gameState.maxCabinetSlots;
+
+          const card = document.createElement('div');
+          card.className = 'card-brutal bg-white p-3 flex flex-col justify-between rounded';
+          card.innerHTML = `
+            <div>
+              <div class="flex justify-between items-start mb-1">
+                <span class="text-xl">${member.icon}</span>
+                <span class="bg-safetyYellow border border-black px-1 text-[10px] font-black uppercase">${member.rarity}</span>
+              </div>
+              <h4 class="font-black text-sm uppercase leading-tight">${member.name}</h4>
+              <p class="text-xs text-neutral-700 font-bold mt-1">${member.desc}</p>
+            </div>
+            <div class="mt-3 pt-2 border-t-2 border-black flex justify-between items-center">
+              <span class="font-black text-sm">$${member.cost}</span>
+              <button onclick="gameShop.buyCabinetMember(${idx})" class="btn-brutal bg-mint px-3 py-1 text-xs font-black" ${(!canAfford || !hasSpace) ? 'disabled' : ''}>
+                ${!hasSpace ? 'SLOTS FULL' : 'APPOINT'}
+              </button>
+            </div>
+          `;
+          cabinetGrid.appendChild(card);
+        });
+
+        // Render Vouchers
+        const vouchersGrid = document.getElementById('shop-vouchers-grid');
+        vouchersGrid.innerHTML = '';
+
+        this.availableVouchers.forEach((voucher, idx) => {
+          const canAfford = gameState.treasury >= voucher.cost;
+
+          const card = document.createElement('div');
+          card.className = 'card-brutal bg-white p-3 flex flex-col justify-between rounded';
+          card.innerHTML = `
+            <div>
+              <div class="flex justify-between items-start mb-1">
+                <span class="text-xl">${voucher.icon}</span>
+                <span class="bg-mint border border-black px-1 text-[10px] font-black uppercase">POLICY</span>
+              </div>
+              <h4 class="font-black text-sm uppercase leading-tight">${voucher.name}</h4>
+              <p class="text-xs text-neutral-700 font-bold mt-1">${voucher.desc}</p>
+            </div>
+            <div class="mt-3 pt-2 border-t-2 border-black flex justify-between items-center">
+              <span class="font-black text-sm">$${voucher.cost}</span>
+              <button onclick="gameShop.buyVoucher(${idx})" class="btn-brutal bg-skyBlue px-3 py-1 text-xs font-black" ${!canAfford ? 'disabled' : ''}>
+                ENACT
+              </button>
+            </div>
+          `;
+          vouchersGrid.appendChild(card);
+        });
+      },
+
+      buyCabinetMember(idx) {
+        const member = this.availableCabinet[idx];
+        if (!member) return;
+
+        if (gameState.treasury < member.cost || gameState.cabinet.length >= gameState.maxCabinetSlots) return;
+
+        gameState.treasury -= member.cost;
+        gameState.cabinet.push({ ...member });
+        this.availableCabinet.splice(idx, 1);
+
+        gameAudio.playShopBuy();
+        careerStats.recordHire();
+        this.renderShopUI();
+        gameUI.updateHUD();
+        gameState.save();
+      },
+
+      buyVoucher(idx) {
+        const voucher = this.availableVouchers[idx];
+        if (!voucher) return;
+
+        if (gameState.treasury < voucher.cost) return;
+
+        gameState.treasury -= voucher.cost;
+        voucher.apply(gameState);
+        this.availableVouchers.splice(idx, 1);
+
+        gameAudio.playShopBuy();
+        this.renderShopUI();
+        gameUI.updateHUD();
+        gameState.save();
+      },
+
+      proceedToNextTerm() {
+        document.getElementById('modal-shop').classList.add('hidden');
+        gameState.isShopOpen = false;
+
+        // Advance Term
+        gameState.term += 1;
+        const termConfig = TERM_CONFIGS[Math.min(gameState.term - 1, TERM_CONFIGS.length - 1)];
+        gameState.targetMandate = termConfig ? termConfig.target : Math.floor(gameState.targetMandate * 2.1);
+        gameState.mandate = 0;
+        gameState.handsRemaining = gameState.baseHands;
+        gameState.discardsRemaining = gameState.baseDiscards;
+
+        // Reset reroll cost
+        this.rerollCost = 3;
+
+        // Run Term Start Modifiers
+        gameState.cabinet.forEach(m => {
+          if (m.onTermStart) m.onTermStart(gameState);
+        });
+
+        careerStats.recordTerm(gameState.term);
+
+        // Deal fresh hand
+        gameState.playerHand = [];
+        gameState.deck = gameState.createFullDeck();
+        gameController.dealNewHand();
+
+        gameUI.updateHUD();
+        gameState.save();
+      }
+    };
+
+    /* =========================================================================
+       11. MODAL HELPERS & INSPECTORS
+       ========================================================================= */
+    function closeAllModals() {
+      document.querySelectorAll('[id^="modal-"]').forEach(m => m.classList.add('hidden'));
+    }
+
+    function openRulesModal() {
+      gameAudio.playSelect();
+      document.getElementById('modal-rules').classList.remove('hidden');
+    }
+    function closeRulesModal() {
+      document.getElementById('modal-rules').classList.add('hidden');
+    }
+
+    function openDeckModal() {
+      gameAudio.playSelect();
+      const container = document.getElementById('deck-cards-container');
+      container.innerHTML = '';
+      document.getElementById('deck-modal-count').textContent = gameState.deck.length;
+
+      const sortedDeck = [...gameState.deck].sort((a, b) => a.faction.localeCompare(b.faction) || RANK_VALUES[b.rank] - RANK_VALUES[a.rank]);
+
+      sortedDeck.forEach(c => {
+        const faction = FACTIONS[c.faction] || FACTIONS.labor;
+        const pill = document.createElement('div');
+        pill.className = `p-1 border-2 border-black rounded ${faction.badgeClass} flex flex-col items-center`;
+        pill.innerHTML = `
+          <span class="text-[10px] leading-none">${c.rank}</span>
+          <span class="text-xs leading-none">${faction.icon}</span>
+        `;
+        container.appendChild(pill);
+      });
+
+      document.getElementById('modal-deck').classList.remove('hidden');
+    }
+    function closeDeckModal() {
+      document.getElementById('modal-deck').classList.add('hidden');
+    }
+
+    function openStatsModal() {
+      gameAudio.playSelect();
+      const stats = careerStats.getStats();
+      document.getElementById('stats-max-term').textContent = `Term ${stats.maxTerm}`;
+      document.getElementById('stats-best-hand').textContent = stats.bestHand.toLocaleString();
+      document.getElementById('stats-total-hands').textContent = stats.totalBills;
+      document.getElementById('stats-wins').textContent = stats.wins;
+      document.getElementById('stats-members-hired').textContent = stats.membersHired;
+
+      document.getElementById('modal-stats').classList.remove('hidden');
+    }
+    function closeStatsModal() {
+      document.getElementById('modal-stats').classList.add('hidden');
+    }
+
+    function clearCareerStats() {
+      if (confirm('Clear all lifetime career statistics?')) {
+        localStorage.removeItem('cabinet_career_stats');
+        openStatsModal();
+      }
+    }
+
+    /* =========================================================================
+       12. GAME INITIALIZATION ON PAGE LOAD
+       ========================================================================= */
+    window.addEventListener('DOMContentLoaded', () => {
+      // 1. Initialize Phaser canvas
+      initPhaser();
+
+      // 2. Attempt to restore persistent state
+      const loaded = gameState.load();
+      if (!loaded || gameState.playerHand.length === 0) {
+        gameState.reset();
+        gameController.dealNewHand();
+      } else {
+        if (phaserScene) {
+          phaserScene.renderPlayerHand();
+        }
+      }
+
+      // 3. Update HUD
+      gameUI.updateHUD();
+
+      // Keyboard hotkeys for power users
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          if (!gameState.isScoring && gameState.selectedCardIds.length > 0) {
+            gameController.playSelectedHand();
+          }
+        } else if (e.key === 'Backspace' || e.key === 'Delete') {
+          if (!gameState.isScoring && gameState.selectedCardIds.length > 0) {
+            gameController.discardSelectedCards();
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
